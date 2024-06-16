@@ -11,6 +11,9 @@ import Screeps.Id
 import Screeps.Regenerates (class Regenerates)
 import Screeps.RoomObject  (class RoomObject, pos)
 import Screeps.Resource    (ResourceType)
+import Data.Argonaut.Decode.Error (JsonDecodeError (TypeMismatch))
+import Data.Bifunctor (lmap)
+import Prelude ((<<<))
 
 foreign import data Mineral :: Type
 instance objectMineral      :: RoomObject  Mineral
@@ -18,8 +21,10 @@ instance mineralRegenerates :: Regenerates Mineral
 instance mineralHasId       :: HasId       Mineral
   where
     validate = instanceOf "Mineral"
-instance encodeMineral       :: EncodeJson Mineral where encodeJson = encodeJsonWithId
-instance decodeMineral       :: DecodeJson Mineral where decodeJson = decodeJsonWithId
+instance encodeMineral       :: EncodeJson Mineral where
+  encodeJson = encodeJsonWithId
+instance decodeMineral       :: DecodeJson Mineral where
+  decodeJson = lmap TypeMismatch <<< decodeJsonWithId
 instance showMineral         :: Show       Mineral where
   show m = show (mineralType m) <> "@" <> show (pos m)
 

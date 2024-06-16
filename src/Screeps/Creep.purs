@@ -1,13 +1,14 @@
 -- | Corresponds to the Screeps API [Creep](http://support.screeps.com/hc/en-us/articles/203013212-Creep)
 module Screeps.Creep where
 
-import Prelude                     (Unit, show, ($), (<$>), (<>))
+import Prelude                    
 import Effect           (Effect)
 import Data.Argonaut.Decode        (class DecodeJson, decodeJson)
 import Data.Argonaut.Encode        (class EncodeJson, encodeJson)
 import Data.Either                 (Either)
 import Data.Maybe                  (Maybe(..))
-import Data.Map                 (Map)
+import Data.Map                    (Map)
+import Data.Bifunctor (lmap)
 
 import Screeps.BodyPartType     (BodyPartType)
 import Screeps.ConstructionSite (ConstructionSite)
@@ -131,7 +132,7 @@ heal ::  Creep -> Creep -> Effect ReturnCode
 heal = runThisEffectFn1 "heal"
 
 getMemory :: forall a. (DecodeJson a) => Creep -> String -> Effect (Either String a)
-getMemory creep key = decodeJson <$> unsafeGetFieldEffect key creepMemory
+getMemory creep key = lmap show <<< decodeJson <$> unsafeGetFieldEffect key creepMemory
   where creepMemory = unsafeField "memory" creep
 
 setMemory :: forall a. (EncodeJson a) => Creep -> String -> a -> Effect Unit

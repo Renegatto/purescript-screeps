@@ -1,12 +1,12 @@
-exports.usePathFinder=function() {
+export const usePathFinder=function() {
     return PathFinder.use(true);
 }
-exports.deserialize=function(json) {
+export const deserialize=function(json) {
     return function () {
         return PathFinder.CostMatrix.deserialize(json);
     }
 }
-exports.search=function(from) {
+export const search=function(from) {
     return     function(to  ) {
         return function(opts) {
             var clonedOpts = {
@@ -25,8 +25,8 @@ exports.search=function(from) {
         }
     }
 }
-exports.newCostMatrix=function() {
+export const newCostMatrix=function() {
     return new PathFinder.CostMatrix;
 }
-exports.infinity=Number.POSITIVE_INFINITY;
+export const infinity=Number.POSITIVE_INFINITY;
 

@@ -7,7 +7,10 @@ import Effect
 import Data.Eq(class Eq)
 import Data.Maybe (Maybe)
 import Data.Show(class Show)
+import Prelude
+import Data.Bifunctor (lmap)
 
+import Data.Argonaut.Decode.Error (JsonDecodeError (TypeMismatch))
 import Screeps.Constants (nuker_cooldown)
 import Screeps.Coolsdown (class Coolsdown)
 import Screeps.Destructible (class Destructible)
@@ -26,7 +29,7 @@ instance ownedNuker       :: Owned      Nuker
 instance nukerHasId       :: HasId      Nuker where
   validate = instanceOf "StructureNuker"
 instance encodeNuker      :: EncodeJson Nuker where encodeJson = encodeJsonWithId
-instance decodeNuker      :: DecodeJson Nuker where decodeJson = decodeJsonWithId
+instance decodeNuker      :: DecodeJson Nuker where decodeJson = lmap TypeMismatch <<< decodeJsonWithId
 instance structuralNuker  :: Structural Nuker
 instance refillableNuker  :: Refillable Nuker
 instance coolsdownNuker   :: Coolsdown  Nuker where

@@ -15,6 +15,9 @@ import Screeps.FFI (instanceOf, runThisEffectFn0, unsafeField)
 import Screeps.Id (class HasId, encodeJsonWithId, decodeJsonWithId, eqById, validate)
 import Screeps.ReturnCode (ReturnCode)
 import Unsafe.Coerce (unsafeCoerce)
+import Data.Argonaut.Decode.Error (JsonDecodeError (TypeMismatch))
+import Data.Bifunctor (lmap)
+import Prelude ((<<<))
 
 class Structural     a -- has `structureType` - Structure or ConstructionSite
 
@@ -62,9 +65,12 @@ foreign import data AnyStructure  :: Type
 instance anyStructureHasId        :: HasId      AnyStructure
   where
     validate = instanceOf "Structure"
-instance encodeAnyStructure       :: EncodeJson AnyStructure where encodeJson = encodeJsonWithId
-instance decodeAnyStructure       :: DecodeJson AnyStructure where decodeJson = decodeJsonWithId
-instance eqAnyStructure           :: Eq         AnyStructure where eq         = eqById
+instance encodeAnyStructure       :: EncodeJson AnyStructure where
+  encodeJson = encodeJsonWithId
+instance decodeAnyStructure       :: DecodeJson AnyStructure where
+  decodeJson = lmap TypeMismatch <<< decodeJsonWithId
+instance eqAnyStructure           :: Eq         AnyStructure where
+  eq         = eqById
 instance anyStructureIsRoomObject :: RoomObject AnyStructure
 instance anyStructureIsStructural :: Structural AnyStructure
 instance anyStructure             :: Structure  AnyStructure where

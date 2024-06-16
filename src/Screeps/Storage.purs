@@ -6,7 +6,10 @@ import Data.Argonaut.Decode (class DecodeJson, decodeJson)
 import Data.Eq
 import Data.Maybe           (Maybe)
 import Data.Show
+import Prelude
+import Data.Bifunctor (lmap)
 
+import Data.Argonaut.Decode.Error (JsonDecodeError (TypeMismatch))
 import Screeps.Destructible (class Destructible)
 import Screeps.FFI (instanceOf)
 import Screeps.Id (class HasId, decodeJsonWithId, encodeJsonWithId, eqById)
@@ -22,7 +25,7 @@ instance storageHasId       :: HasId      Storage
   where
     validate = instanceOf "StructureStorage"
 instance encodeStorage      :: EncodeJson Storage where encodeJson = encodeJsonWithId
-instance decodeStorage      :: DecodeJson Storage where decodeJson = decodeJsonWithId
+instance decodeStorage      :: DecodeJson Storage where decodeJson = lmap TypeMismatch <<< decodeJsonWithId
 instance structuralStorage  :: Structural Storage
 instance storageStores      :: Stores     Storage
 instance showStorage        :: Show       Storage where show = showStructure

@@ -2,9 +2,9 @@
 
 // module Screeps.Room
 
-exports.roomGlobal = Room;
+export const roomGlobal = Room;
 
-exports.findExitToImpl = function(room){
+export const findExitToImpl = function(room){
   return function(otherRoom){
     return function(left){
       return function(right){

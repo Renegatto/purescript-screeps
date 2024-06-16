@@ -7,7 +7,10 @@ import Data.Argonaut.Decode (class DecodeJson, decodeJson)
 import Data.Eq
 import Data.Maybe (Maybe)
 import Data.Show
+import Data.Bifunctor (lmap)
+import Prelude
 
+import Data.Argonaut.Decode.Error (JsonDecodeError (TypeMismatch))
 import Screeps.Destructible (class Destructible)
 import Screeps.FFI (runThisEffectFn1, runThisEffectFn2, instanceOf)
 import Screeps.Id
@@ -24,7 +27,7 @@ instance towerHasId       :: HasId      Tower
   where
     validate = instanceOf "StructureTower"
 instance encodeTower      :: EncodeJson Tower where encodeJson = encodeJsonWithId
-instance decodeTower      :: DecodeJson Tower where decodeJson = decodeJsonWithId
+instance decodeTower      :: DecodeJson Tower where decodeJson = lmap TypeMismatch <<< decodeJsonWithId
 instance structuralTower  :: Structural Tower
 instance refillableTower  :: Refillable Tower
 instance structureTower   :: Structure  Tower where

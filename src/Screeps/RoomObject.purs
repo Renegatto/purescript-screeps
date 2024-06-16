@@ -8,9 +8,11 @@ import Effect.Exception (try)
 import Effect.Unsafe (unsafePerformEffect)
 import Data.Argonaut.Decode.Class
 import Data.Argonaut.Encode.Class
+import Data.Argonaut.Decode.Error (JsonDecodeError(TypeMismatch))
 import Data.Either
 import Data.Eq
 import Data.Function (($), on)
+import Data.Bifunctor (lmap)
 import Data.Maybe
 import Data.Monoid
 import Data.Show
@@ -46,18 +48,26 @@ instance decodeJson :: DecodeJson Room where
   decodeJson           json = do
     roomNam <- decodeJson json
     case unsafePerformEffect $ try $ map toMaybe $ lookupRoom roomNam of
-         Left   err      -> Left  $ "Cannot access the room: " <> show roomNam
-                                 <> " because of: "            <> show err
-         Right (Nothing) -> Left  $ "Cannot access room: "     <> show roomNam
-         Right (Just r ) -> Right   r
+         Left err -> Left
+          $ TypeMismatch
+          $ "Cannot access the room: "
+          <> show roomNam
+          <> " because of: "
+          <> show err
+         Right (Nothing) -> Left
+           $ TypeMismatch
+           $ "Cannot access room: " <> show roomNam
+         Right (Just r ) -> Right r
 
 foreign import data AnyRoomObject :: Type
 
 instance anyRoomObject       :: RoomObject AnyRoomObject
 instance anyRoomObjectHasId  :: HasId      AnyRoomObject where
   validate = instanceOf "RoomObject"
-instance encodeAnyRoomObject :: EncodeJson AnyRoomObject where encodeJson = encodeJsonWithId
-instance decodeAnyRoomObject :: DecodeJson AnyRoomObject where decodeJson = decodeJsonWithId
+instance encodeAnyRoomObject :: EncodeJson AnyRoomObject where
+  encodeJson = encodeJsonWithId
+instance decodeAnyRoomObject :: DecodeJson AnyRoomObject where
+  decodeJson = lmap TypeMismatch <<< decodeJsonWithId
 
 room :: forall a. RoomObject a => a -> Room
 room = unsafeField "room"

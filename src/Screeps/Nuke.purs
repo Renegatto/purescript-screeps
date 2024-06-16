@@ -3,6 +3,9 @@ module Screeps.Nuke where
 
 import Data.Argonaut.Encode.Class (class EncodeJson, encodeJson)
 import Data.Argonaut.Decode.Class (class DecodeJson, decodeJson)
+import Data.Argonaut.Decode.Error (JsonDecodeError (TypeMismatch))
+import Data.Bifunctor (lmap)
+import Prelude ((<<<))
 
 import Screeps.FFI (unsafeField, instanceOf)
 import Screeps.Id (class HasId, encodeJsonWithId, decodeJsonWithId)
@@ -13,8 +16,10 @@ foreign import data Nuke :: Type
 instance objectNuke      :: RoomObject  Nuke
 instance nukeHasId       :: HasId       Nuke where
   validate = instanceOf "Nuke"
-instance encodeNuke      :: EncodeJson  Nuke where encodeJson = encodeJsonWithId
-instance decodeNuke      :: DecodeJson  Nuke where decodeJson = decodeJsonWithId
+instance encodeNuke      :: EncodeJson  Nuke where
+  encodeJson = encodeJsonWithId
+instance decodeNuke      :: DecodeJson  Nuke where
+  decodeJson = lmap TypeMismatch <<< decodeJsonWithId
 instance nukeRegenerates :: Regenerates Nuke
 
 launchRoomName :: Nuke -> String

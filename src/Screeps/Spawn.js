@@ -1,6 +1,6 @@
 "use strict";
 
-exports.createCreepImpl = function(structure){
+export const createCreepImpl = function(structure){
     return function(parts){
         return function(left){
             return function(right){
@@ -17,7 +17,7 @@ exports.createCreepImpl = function(structure){
     }
 }
 
-exports.createCreepPrimeImpl = function(structure){
+export const createCreepPrimeImpl = function(structure){
     return function(parts){
         return function(name){
             return function(memory){

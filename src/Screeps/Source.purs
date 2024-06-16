@@ -6,6 +6,9 @@ import Data.Argonaut.Decode (class DecodeJson, decodeJson)
 import Data.Eq              (class Eq)
 import Data.Semigroup       ((<>))
 import Data.Show
+import Data.Argonaut.Decode.Error (JsonDecodeError (TypeMismatch))
+import Data.Bifunctor (lmap)
+import Prelude ((<<<))
 
 import Screeps.FFI (unsafeField, instanceOf)
 import Screeps.Id
@@ -17,8 +20,10 @@ instance objectSource      :: RoomObject  Source
 instance sourceHasId       :: HasId       Source
   where
     validate = instanceOf "Source"
-instance encodeSource      :: EncodeJson  Source where encodeJson = encodeJsonWithId
-instance decodeSource      :: DecodeJson  Source where decodeJson = decodeJsonWithId
+instance encodeSource      :: EncodeJson  Source where
+  encodeJson = encodeJsonWithId
+instance decodeSource      :: DecodeJson  Source where
+  decodeJson = lmap TypeMismatch <<< decodeJsonWithId
 instance sourceRegenerates :: Regenerates Source
 instance showSource        :: Show        Source where show s = "Source@" <> show (pos s)
 instance eqSource          :: Eq          Source where eq   = eqById

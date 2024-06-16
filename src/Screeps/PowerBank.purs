@@ -6,6 +6,9 @@ import Data.Argonaut.Decode.Class (class DecodeJson, decodeJson)
 import Data.Eq
 import Data.Maybe (Maybe)
 import Data.Show
+import Data.Argonaut.Decode.Error (JsonDecodeError (TypeMismatch))
+import Data.Bifunctor (lmap)
+import Prelude ((<<<))
 
 import Screeps.Decays    (class Decays)
 import Screeps.Destructible (class Destructible)
@@ -22,7 +25,7 @@ instance structuralPowerBank   :: Structural PowerBank
 instance powerBankHasId        :: HasId      PowerBank where
     validate = instanceOf "StructurePowerBank"
 instance encodePowerBank       :: EncodeJson PowerBank where encodeJson = encodeJsonWithId
-instance decodePowerBank       :: DecodeJson PowerBank where decodeJson = decodeJsonWithId
+instance decodePowerBank       :: DecodeJson PowerBank where decodeJson = lmap TypeMismatch <<< decodeJsonWithId
 instance structurePowerBank    :: Structure  PowerBank where
     _structureType _ = structure_power_bank
 instance decaysPowerBank       :: Decays     PowerBank

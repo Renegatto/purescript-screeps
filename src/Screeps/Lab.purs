@@ -7,7 +7,10 @@ import Effect
 import Data.Eq(class Eq)
 import Data.Maybe (Maybe)
 import Data.Show (class Show, show)
+import Prelude
+import Data.Bifunctor (lmap)
 
+import Data.Argonaut.Decode.Error (JsonDecodeError (TypeMismatch))
 import Screeps.Constants  (lab_cooldown)
 import Screeps.Coolsdown  (class Coolsdown)
 import Screeps.Destructible (class Destructible)
@@ -32,7 +35,7 @@ instance coolsdownLab   :: Coolsdown Lab where
 instance structureLab   :: Structure Lab where
   _structureType _ = structure_lab
 instance encodeLab      :: EncodeJson Lab where encodeJson = encodeJsonWithId
-instance decodeLab      :: DecodeJson Lab where decodeJson = decodeJsonWithId
+instance decodeLab      :: DecodeJson Lab where decodeJson = lmap TypeMismatch <<< decodeJsonWithId
 instance showLab        :: Show       Lab where show = showStructure
 instance destructibleLab :: Destructible Lab
 

@@ -6,7 +6,10 @@ import Data.Argonaut.Decode.Class (class DecodeJson, decodeJson)
 import Data.Eq
 import Data.Maybe (Maybe)
 import Data.Show
+import Prelude
+import Data.Bifunctor (lmap)
 
+import Data.Argonaut.Decode.Error (JsonDecodeError (TypeMismatch))
 import Screeps.Destructible (class Destructible)
 import Screeps.FFI (instanceOf)
 import Screeps.Id (class HasId, decodeJsonWithId, encodeJsonWithId, eqById)
@@ -20,7 +23,7 @@ instance ownedExtractor        :: Owned      Extractor
 instance extractorHasId        :: HasId      Extractor where
   validate = instanceOf "StructureExtractor"
 instance encodeExtractor       :: EncodeJson Extractor where encodeJson = encodeJsonWithId
-instance decodeExtractor       :: DecodeJson Extractor where decodeJson = decodeJsonWithId
+instance decodeExtractor       :: DecodeJson Extractor where decodeJson = lmap TypeMismatch <<< decodeJsonWithId
 instance structuralExtractor   :: Structural Extractor
 instance structureExtractor    :: Structure  Extractor where
   _structureType _ = structure_extractor

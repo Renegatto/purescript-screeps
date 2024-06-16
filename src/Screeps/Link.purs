@@ -6,7 +6,10 @@ import Data.Argonaut.Decode (class DecodeJson, decodeJson)
 import Effect    (Effect)
 import Data.Maybe           (Maybe)
 import Data.Show            (class Show,       show)
+import Prelude
+import Data.Bifunctor (lmap)
 
+import Data.Argonaut.Decode.Error (JsonDecodeError (TypeMismatch))
 import Screeps.Constants  (link_cooldown)
 import Screeps.Coolsdown  (class Coolsdown)
 import Screeps.Destructible (class Destructible)
@@ -32,7 +35,7 @@ instance refillableLink  :: Refillable Link
 instance structureLink   :: Structure  Link where
   _structureType _ = structure_link
 instance encodeLink      :: EncodeJson Link where encodeJson = encodeJsonWithId
-instance decodeLink      :: DecodeJson Link where decodeJson = decodeJsonWithId
+instance decodeLink      :: DecodeJson Link where decodeJson = lmap TypeMismatch <<< decodeJsonWithId
 instance showLink        :: Show       Link where show       = showStructure
 instance destructibleLink :: Destructible Link
 

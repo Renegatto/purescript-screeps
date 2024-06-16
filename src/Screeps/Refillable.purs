@@ -1,6 +1,9 @@
 -- | Corresponds to the Screeps API [StructureExtension](http://support.screeps.com/hc/en-us/articles/207711949-StructureExtension)
 module Screeps.Refillable where
 
+import Data.Argonaut.Decode.Error (JsonDecodeError (TypeMismatch))
+import Data.Bifunctor (lmap)
+import Prelude ((<<<))
 import Data.Argonaut.Encode.Class (class EncodeJson, encodeJson)
 import Data.Argonaut.Decode.Class (class DecodeJson, decodeJson)
 import Data.Eq
@@ -32,7 +35,7 @@ instance anyRefillableHasId        :: HasId      AnyRefillable
               || instanceOf "StructureLink"       o
               || instanceOf "StructureLab"        o
 instance encodeRefillable          :: EncodeJson AnyRefillable where encodeJson = encodeJsonWithId
-instance decodeRefillable          :: DecodeJson AnyRefillable where decodeJson = decodeJsonWithId
+instance decodeRefillable          :: DecodeJson AnyRefillable where decodeJson = lmap TypeMismatch <<< decodeJsonWithId
 instance refillableIsStructural    :: Structural AnyRefillable
 instance refillableIsOwned         :: Owned      AnyRefillable
 instance showRefillable            :: Show       AnyRefillable where show       = showStructure

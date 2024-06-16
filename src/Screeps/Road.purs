@@ -6,7 +6,9 @@ import Data.Argonaut.Decode.Class (class DecodeJson, decodeJson)
 import Data.Eq
 import Data.Maybe (Maybe)
 import Data.Show  (class Show)
-
+import Data.Argonaut.Decode.Error (JsonDecodeError (TypeMismatch))
+import Data.Bifunctor (lmap)
+import Prelude ((<<<))
 import Screeps.FFI (instanceOf)
 import Screeps.Decays    ( class Decays )
 import Screeps.Destructible
@@ -25,7 +27,7 @@ instance roadDecays      :: Decays     Road
 instance structureRoad   :: Structure  Road where
   _structureType _ = structure_road
 instance showRoad        :: Show       Road where show       = showStructure
-instance decodeRoad      :: DecodeJson Road where decodeJson = decodeJsonWithId
+instance decodeRoad      :: DecodeJson Road where decodeJson = lmap TypeMismatch <<< decodeJsonWithId
 instance encodeRoad      :: EncodeJson Road where encodeJson = encodeJsonWithId
 instance destructibleRoad:: Destructible Road
 

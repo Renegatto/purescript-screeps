@@ -1,8 +1,9 @@
 -- | Corresponds to the Screeps APIs [Memory](http://support.screeps.com/hc/en-us/articles/203084991-API-Reference) and [RawMemory](http://support.screeps.com/hc/en-us/articles/205619121-RawMemory)
 module Screeps.Memory where
 
-import Prelude (Unit, (<$>), (<<<), (>>=))
+import Prelude (Unit, (<$>), (<<<), (>>>), (>>=), show)
 
+import Data.Bifunctor (lmap)
 import Data.Argonaut.Core (Json, stringify)
 import Data.Argonaut.Decode (class DecodeJson, decodeJson)
 import Data.Argonaut.Encode (class EncodeJson, encodeJson)
@@ -22,7 +23,7 @@ foreign import setObjectMemory :: String -> String -> String -> Json
                                -> Effect Unit
 
 get :: forall a. (DecodeJson a) => MemoryGlobal -> String -> Effect (Either String a)
-get memoryGlobal key = decodeJson <$> unsafeGetFieldEffect key memoryGlobal
+get memoryGlobal key = lmap show <<< decodeJson <$> unsafeGetFieldEffect key memoryGlobal
 
 set :: forall a. (EncodeJson a) => MemoryGlobal -> String -> a -> Effect Unit
 set memoryGlobal key val = unsafeSetFieldEffect key memoryGlobal (encodeJson val)
@@ -43,7 +44,7 @@ setRaw' :: RawMemoryGlobal -> String -> Effect Unit
 setRaw' = runThisEffectFn1 "set"
 
 fromJson :: forall a. (DecodeJson a) => String -> (Either String a)
-fromJson jsonStr = jsonParser jsonStr >>= decodeJson
+fromJson jsonStr = jsonParser jsonStr >>= decodeJson >>> lmap show
 
 toJson :: forall a. (EncodeJson a) => a -> String
 toJson = stringify <<< encodeJson

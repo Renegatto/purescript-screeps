@@ -1,5 +1,9 @@
 -- | This module facilitates caching of the PathFinder's `RoomCallback`.
-module Screeps.Path.Cache where --(Cache, cached, newCache) where
+module Screeps.Path.Cache
+  ( Cache(..)
+  , newCache
+  )
+  where --(Cache, cached, newCache) where
 
 import Data.Maybe (Maybe(..))
 import Effect

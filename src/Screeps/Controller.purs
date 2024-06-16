@@ -1,6 +1,9 @@
 -- | Corresponds to the Screeps API [StructureController](http://support.screeps.com/hc/en-us/articles/207711889-StructureController)
 module Screeps.Controller where
 
+import Data.Argonaut.Decode.Error (JsonDecodeError (TypeMismatch))
+import Data.Bifunctor (lmap)
+import Prelude ((<<<))
 import Effect
 import Data.Argonaut.Encode.Class (class EncodeJson, encodeJson)
 import Data.Argonaut.Decode.Class (class DecodeJson, decodeJson)
@@ -23,7 +26,7 @@ instance ownedController       :: Owned      Controller
 instance controllerHasId       :: HasId      Controller where
   validate = instanceOf "StructureController"
 instance encodeController      :: EncodeJson Controller where encodeJson = encodeJsonWithId
-instance decodeController      :: DecodeJson Controller where decodeJson = decodeJsonWithId
+instance decodeController      :: DecodeJson Controller where decodeJson = lmap TypeMismatch <<< decodeJsonWithId
 instance structuralController  :: Structural Controller
 instance eqController          :: Eq         Controller where eq   = eqById
 instance showController        :: Show       Controller where show = showStructure

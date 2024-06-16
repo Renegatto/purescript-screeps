@@ -7,7 +7,10 @@ import Data.Argonaut.Decode (class DecodeJson, decodeJson)
 import Data.Eq
 import Data.Maybe (Maybe)
 import Data.Show  (class Show, show)
+import Prelude
+import Data.Bifunctor (lmap)
 
+import Data.Argonaut.Decode.Error (JsonDecodeError (TypeMismatch))
 import Screeps.Destructible (class Destructible)
 import Screeps.FFI        (runThisEffectFn3, runThisEffectFn4, unsafeField, instanceOf)
 import Screeps.Id
@@ -26,7 +29,7 @@ instance terminalHasId       :: HasId      Terminal
     validate = instanceOf "StructureTerminal"
 instance eqTerminal          :: Eq         Terminal where eq = eqById
 instance encodeTerminal      :: EncodeJson Terminal where encodeJson = encodeJsonWithId
-instance decodeTerminal      :: DecodeJson Terminal where decodeJson = decodeJsonWithId
+instance decodeTerminal      :: DecodeJson Terminal where decodeJson = lmap TypeMismatch <<< decodeJsonWithId
 instance structuralTerminal  :: Structural Terminal
 instance terminalStores      :: Stores     Terminal
 instance structureTerminal   :: Structure  Terminal where

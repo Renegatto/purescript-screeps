@@ -6,6 +6,9 @@ import Data.Argonaut.Decode (class DecodeJson, decodeJson)
 import Data.Eq
 import Data.Maybe (Maybe)
 import Data.Show (class Show, show)
+import Data.Argonaut.Decode.Error (JsonDecodeError (TypeMismatch))
+import Data.Bifunctor (lmap)
+import Prelude ((<<<))
 
 import Screeps.Destructible (class Destructible)
 import Screeps.FFI (unsafeField, instanceOf)
@@ -24,7 +27,7 @@ instance structuralKeeperLair   :: Structural KeeperLair
 instance structureKeeperLair    :: Structure  KeeperLair where
   _structureType _ = structure_keeper_lair
 instance encodeKeeperLair       :: EncodeJson KeeperLair where encodeJson = encodeJsonWithId
-instance decodeKeeperLair       :: DecodeJson KeeperLair where decodeJson = decodeJsonWithId
+instance decodeKeeperLair       :: DecodeJson KeeperLair where decodeJson = lmap TypeMismatch <<< decodeJsonWithId
 instance showKeeperLair         :: Show       KeeperLair where show = showStructure
 instance destructibleKeeperLair :: Destructible KeeperLair
 

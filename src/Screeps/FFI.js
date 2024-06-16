@@ -2,19 +2,19 @@
 
 // module Screeps.FFI
 
-exports.unsafeField = function(key){
+export const unsafeField = function(key){
   return function(obj){
     return obj[key];
   }
 }
 
-exports.unsafeIntField = function(key){
+export const unsafeIntField = function(key){
   return function(obj){
     return obj[key]|0;
   }
 }
 
-exports.unsafeOptField_helper = function(Nothing) {
+export const unsafeOptField_helper = function(Nothing) {
   return function(Just) {
     return function(key){
         return function(obj){
@@ -29,7 +29,7 @@ exports.unsafeOptField_helper = function(Nothing) {
   }
 }
 
-exports.unsafeGetFieldEffect = function(key){
+export const unsafeGetFieldEffect = function(key){
   return function(obj){
     return function(){
       return obj[key];
@@ -37,7 +37,7 @@ exports.unsafeGetFieldEffect = function(key){
   }
 }
 
-exports.unsafeSetFieldEffect = function(key){
+export const unsafeSetFieldEffect = function(key){
   return function(obj){
     return function(val){
       return function(){
@@ -47,7 +47,7 @@ exports.unsafeSetFieldEffect = function(key){
   }
 }
 
-exports.unsafeDeleteFieldEffect = function(key){
+export const unsafeDeleteFieldEffect = function(key){
   return function(obj){
       return function(){
         delete obj[key];
@@ -55,7 +55,7 @@ exports.unsafeDeleteFieldEffect = function(key){
   }
 }
 
-exports.runThisEffectFn0 = function(key){
+export const runThisEffectFn0 = function(key){
   return function(self){
     return function(){
       return self[key]();
@@ -63,7 +63,7 @@ exports.runThisEffectFn0 = function(key){
   }
 }
 
-exports.runThisEffectFn1 = function(key){
+export const runThisEffectFn1 = function(key){
   return function(self){
     return function(a){
       return function(){
@@ -73,7 +73,7 @@ exports.runThisEffectFn1 = function(key){
   }
 }
 
-exports.runThisEffectFn2 = function(key){
+export const runThisEffectFn2 = function(key){
   return function(self){
     return function(a){
       return function(b){
@@ -85,7 +85,7 @@ exports.runThisEffectFn2 = function(key){
   }
 }
 
-exports.runThisEffectFn3 = function(key){
+export const runThisEffectFn3 = function(key){
   return function(self){
     return function(a){
       return function(b){
@@ -99,7 +99,7 @@ exports.runThisEffectFn3 = function(key){
   }
 }
 
-exports.runThisEffectFn4 = function(key){
+export const runThisEffectFn4 = function(key){
   return function(self){
     return function(a){
       return function(b){
@@ -115,7 +115,7 @@ exports.runThisEffectFn4 = function(key){
   }
 }
 
-exports.runThisEffectFn5 = function(key){
+export const runThisEffectFn5 = function(key){
   return function(self){
     return function(a){
       return function(b){
@@ -133,7 +133,7 @@ exports.runThisEffectFn5 = function(key){
   }
 }
 
-exports.runThisEffectFn6 = function(key){
+export const runThisEffectFn6 = function(key){
   return function(self){
     return function(a){
       return function(b){
@@ -153,13 +153,13 @@ exports.runThisEffectFn6 = function(key){
   }
 }
 
-exports.runThisFn0 = function(key){
+export const runThisFn0 = function(key){
   return function(self){
     return self[key]();
   }
 }
 
-exports.runThisFn1 = function(key){
+export const runThisFn1 = function(key){
   return function(self){
     return function(a){
       return self[key](a);
@@ -167,7 +167,7 @@ exports.runThisFn1 = function(key){
   }
 }
 
-exports.runThisFn2 = function(key){
+export const runThisFn2 = function(key){
   return function(self){
     return function(a){
       return function(b){
@@ -177,7 +177,7 @@ exports.runThisFn2 = function(key){
   }
 }
 
-exports.runThisFn3 = function(key){
+export const runThisFn3 = function(key){
   return function(self){
     return function(a){
       return function(b){
@@ -189,7 +189,7 @@ exports.runThisFn3 = function(key){
   }
 }
 
-exports.runThisFn4 = function(key){
+export const runThisFn4 = function(key){
   return function(self){
     return function(a){
       return function(b){
@@ -203,7 +203,7 @@ exports.runThisFn4 = function(key){
   }
 }
 
-exports.runThisFn5 = function(key){
+export const runThisFn5 = function(key){
   return function(self){
     return function(a){
       return function(b){
@@ -219,7 +219,7 @@ exports.runThisFn5 = function(key){
   }
 }
 
-exports.runThisFn6 = function(key){
+export const runThisFn6 = function(key){
   return function(self){
     return function(a){
       return function(b){
@@ -236,23 +236,22 @@ exports.runThisFn6 = function(key){
     }
   }
 }
+export const _null = null;
+export const undefined = undefined;
 
-exports.null = null;
-exports.undefined = undefined;
-
-exports.notNullOrUndefined = function(x){
+export const notNullOrUndefined = function(x){
     return x;
 }
 
-exports.isNull = function(x){
+export const isNull = function(x){
     return x === null;
 }
 
-exports.isUndefined = function(x){
+export const isUndefined = function(x){
     return x === undefined;
 }
 
-exports.toMaybeImpl = function(val, nothing, just){
+export const toMaybeImpl = function(val, nothing, just){
     if(val === null || val === undefined){
         return nothing;
     } else {
@@ -260,7 +259,7 @@ exports.toMaybeImpl = function(val, nothing, just){
     }
 }
 
-exports.selectMaybesImpl = function(isJust){
+export const selectMaybesImpl = function(isJust){
     return function(fromJust){
         return function(obj){
             var newObj = {};
@@ -277,7 +276,7 @@ exports.selectMaybesImpl = function(isJust){
     }
 }
 
-exports.instanceOf = function (className) {
+export const instanceOf = function (className) {
     return function (object) {
         var global = (1,eval)('this');
         return object instanceof global[className];

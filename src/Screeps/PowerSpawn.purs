@@ -7,7 +7,10 @@ import Data.Argonaut.Decode.Class (class DecodeJson, decodeJson)
 import Data.Eq
 import Data.Show
 import Data.Maybe (Maybe)
+import Prelude
+import Data.Bifunctor (lmap)
 
+import Data.Argonaut.Decode.Error (JsonDecodeError (TypeMismatch))
 import Screeps.Destructible (class Destructible)
 import Screeps.FFI (runThisEffectFn0, runThisEffectFn1, unsafeField, instanceOf)
 import Screeps.Id
@@ -25,7 +28,7 @@ instance powerSpawnHasId       :: HasId      PowerSpawn
   where
     validate = instanceOf "StructurePowerSpawn"
 instance encodePowerSpawn      :: EncodeJson PowerSpawn where encodeJson = encodeJsonWithId
-instance decodePowerSpawn      :: DecodeJson PowerSpawn where decodeJson = decodeJsonWithId
+instance decodePowerSpawn      :: DecodeJson PowerSpawn where decodeJson = lmap TypeMismatch <<< decodeJsonWithId
 instance refillablePowerSpawn  :: Refillable PowerSpawn
 instance destructiblePowerSpawn  :: Destructible PowerSpawn
 instance structurePowerSpawn   :: Structure  PowerSpawn

@@ -6,6 +6,9 @@ import Data.Argonaut.Decode (class DecodeJson, decodeJson)
 import Data.Eq(class Eq)
 import Data.Maybe(Maybe)
 import Data.Show(class Show)
+import Data.Argonaut.Decode.Error (JsonDecodeError (TypeMismatch))
+import Data.Bifunctor (lmap)
+import Prelude ((<<<))
 
 import Screeps.Destructible (class Destructible)
 import Screeps.FFI (unsafeField, instanceOf)
@@ -20,7 +23,7 @@ instance wallHasId             :: HasId      Wall
   where
     validate = instanceOf "StructureWall"
 instance encodeWall      :: EncodeJson Wall where encodeJson = encodeJsonWithId
-instance decodeWall      :: DecodeJson Wall where decodeJson = decodeJsonWithId
+instance decodeWall      :: DecodeJson Wall where decodeJson = lmap TypeMismatch <<< decodeJsonWithId
 instance structuralWall  :: Structural Wall
 instance structureWall   :: Structure  Wall where
   _structureType _ = structure_wall

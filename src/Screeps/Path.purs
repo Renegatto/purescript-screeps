@@ -18,6 +18,7 @@ import Screeps.FFI (runThisEffectFn0, runThisEffectFn2, runThisEffectFn3, runThi
 import Screeps.RoomPosition.Type (RoomPosition)
 
 import Data.Argonaut.Core (Json, stringify)
+import Data.Argonaut.Decode.Error (JsonDecodeError(TypeMismatch))
 import Data.Function (($))
 import Screeps.Names (RoomName)
 
@@ -144,6 +145,6 @@ instance encodeCostMatrix :: EncodeJson CostMatrix where
 instance decodeCostMatrix :: DecodeJson CostMatrix where
   decodeJson json = do
     case unsafePerformEffect $ try $ deserialize $ SerializedCostMatrix json of
-         Left  err -> Left  $ show err
+         Left  err -> Left  $ TypeMismatch $ show err
          Right r   -> Right   r
 

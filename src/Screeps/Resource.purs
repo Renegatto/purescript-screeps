@@ -11,6 +11,9 @@ import Prelude (($))
 import Screeps.FFI (unsafeField, instanceOf)
 import Screeps.Id (class HasId, encodeJsonWithId, decodeJsonWithId, eqById)
 import Screeps.RoomObject (class RoomObject, pos)
+import Data.Argonaut.Decode.Error (JsonDecodeError (TypeMismatch))
+import Data.Bifunctor (lmap)
+import Prelude ((<<<))
 
 -- Type Resource types
 newtype ResourceType = ResourceType String
@@ -31,9 +34,12 @@ instance objectResource      :: RoomObject Resource
 instance resourceHasId       :: HasId      Resource
   where
     validate = instanceOf "Resource"
-instance eqResource          :: Eq         Resource where eq = eqById
-instance encodeResource      :: EncodeJson Resource where encodeJson = encodeJsonWithId
-instance decodeResource      :: DecodeJson Resource where decodeJson = decodeJsonWithId
+instance eqResource          :: Eq         Resource where
+  eq = eqById
+instance encodeResource      :: EncodeJson Resource where
+  encodeJson = encodeJsonWithId
+instance decodeResource      :: DecodeJson Resource where
+  decodeJson = lmap TypeMismatch <<< decodeJsonWithId
 instance showResource        :: Show       Resource where
   show re = show (amount re) <> " " <> show (resourceType re) <> "@" <> show (pos re)
 

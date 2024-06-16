@@ -1,5 +1,5 @@
 "use strict";
 
-exports.totalAmtCarrying = function(creep){
+export const totalAmtCarrying = function(creep){
   return _.sum(creep.carry);
 }

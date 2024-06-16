@@ -2,6 +2,9 @@ module Screeps.Stores where
 
 import Data.Show
 
+import Data.Argonaut.Decode.Error (JsonDecodeError (TypeMismatch))
+import Data.Bifunctor (lmap)
+import Prelude ((<<<))
 import Data.Argonaut.Decode.Class (class DecodeJson)
 import Data.Argonaut.Encode.Class (class EncodeJson)
 import Data.Array (fromFoldable)
@@ -32,7 +35,7 @@ instance anyStoreHasId        :: HasId      AnyStore
               || instanceOf "StructureContainer" o
               || instanceOf "StructureTerminal"  o
 instance encodeAnyStore       :: EncodeJson AnyStore where encodeJson = encodeJsonWithId
-instance decodeAnyStore       :: DecodeJson AnyStore where decodeJson = decodeJsonWithId
+instance decodeAnyStore       :: DecodeJson AnyStore where decodeJson = lmap TypeMismatch <<< decodeJsonWithId
 instance eqAnyStore           :: Eq         AnyStore where eq         = eqById
 instance anyStoreIsStructural :: Structural AnyStore
 instance anyStoreIsStructure  :: Structure  AnyStore where

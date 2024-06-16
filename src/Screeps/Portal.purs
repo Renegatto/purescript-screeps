@@ -7,6 +7,9 @@ import Data.Eq
 import Data.Maybe (Maybe)
 import Data.Show
 
+import Data.Argonaut.Decode.Error (JsonDecodeError (TypeMismatch))
+import Data.Bifunctor (lmap)
+import Prelude ((<<<))
 import Screeps.Decays (class Decays)
 import Screeps.Destructible (class Destructible)
 import Screeps.FFI (unsafeField, instanceOf)
@@ -24,7 +27,7 @@ instance portalDecays      :: Decays     Portal
 instance portalHasId       :: HasId      Portal where
   validate = instanceOf "StructurePortal"
 instance encodePortal      :: EncodeJson Portal where encodeJson = encodeJsonWithId
-instance decodePortal      :: DecodeJson Portal where decodeJson = decodeJsonWithId
+instance decodePortal      :: DecodeJson Portal where decodeJson = lmap TypeMismatch <<< decodeJsonWithId
 instance structurePortal   :: Structure  Portal where
   _structureType _ = structure_portal
 instance eqPortal          :: Eq         Portal where eq   = eqById

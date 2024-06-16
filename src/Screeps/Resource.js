@@ -1,3 +1,3 @@
 "use strict";
-exports.resource_energy = RESOURCE_ENERGY;
-exports.resource_power = RESOURCE_POWER;
+export const resource_energy = RESOURCE_ENERGY;
+export const resource_power = RESOURCE_POWER;

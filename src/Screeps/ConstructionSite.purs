@@ -1,6 +1,9 @@
 -- | Corresponds to the Screeps API [ConstructionSite](http://support.screeps.com/hc/en-us/articles/203016342-ConstructionSite)
 module Screeps.ConstructionSite where
 
+import Data.Argonaut.Decode.Error (JsonDecodeError (TypeMismatch))
+import Data.Bifunctor (lmap)
+import Prelude ((<<<))
 import Effect
 import Data.Argonaut.Encode.Class (class EncodeJson, encodeJson)
 import Data.Argonaut.Decode.Class (class DecodeJson, decodeJson)
@@ -27,7 +30,7 @@ instance constructionSiteHasId        :: HasId      ConstructionSite
   where
     validate = instanceOf "ConstructionSite"
 instance encodeConstructionSite       :: EncodeJson ConstructionSite where encodeJson = encodeJsonWithId
-instance decodeConstructionSite       :: DecodeJson ConstructionSite where decodeJson = decodeJsonWithId
+instance decodeConstructionSite       :: DecodeJson ConstructionSite where decodeJson = lmap TypeMismatch <<< decodeJsonWithId
 instance eqConstructionSite           :: Eq         ConstructionSite where eq = eqById
 instance showConstructionSite         :: Show       ConstructionSite where
   show c = "construction of " <> show (structureType c)

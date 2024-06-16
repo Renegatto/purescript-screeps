@@ -7,6 +7,9 @@ import Effect
 import Data.Eq
 import Data.Maybe (Maybe)
 import Data.Show
+import Data.Argonaut.Decode.Error (JsonDecodeError (TypeMismatch))
+import Data.Bifunctor (lmap)
+import Prelude ((<<<))
 
 import Screeps.Destructible (class Destructible)
 import Screeps.FFI (runThisEffectFn1, instanceOf)
@@ -22,7 +25,7 @@ instance ownedObserver       :: Owned      Observer
 instance observerHasId       :: HasId      Observer where
   validate = instanceOf "StructureObserver"
 instance encodeObserver      :: EncodeJson Observer where encodeJson = encodeJsonWithId
-instance decodeObserver      :: DecodeJson Observer where decodeJson = decodeJsonWithId
+instance decodeObserver      :: DecodeJson Observer where decodeJson = lmap TypeMismatch <<< decodeJsonWithId
 instance structuralObserver  :: Structural Observer
 instance structureObserver   :: Structure  Observer where
   _structureType _ = structure_observer

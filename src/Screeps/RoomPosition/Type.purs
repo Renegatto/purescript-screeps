@@ -38,17 +38,19 @@ instance eqRoomPosition :: Eq RoomPosition where
         && roomName a == roomName b
 
 instance encodeRoomPosition :: EncodeJson RoomPosition where
-  encodeJson aPos = do
-       "x"        := x        aPos
-    ~> "y"        := y        aPos
-    ~> "roomName" := roomName aPos
-    ~> jsonEmptyObject
+  encodeJson aPos =
+    encodeJson
+      { x: x aPos
+      , y: y aPos
+      , roomName: roomName aPos
+      }
 
 instance decodeRoomPosition :: DecodeJson RoomPosition where
-  decodeJson json = do
-    obj       <- decodeJson json
-    cx        <- obj .? "x"
-    cy        <- obj .? "y"
-    croomName <- obj .? "roomName"
-    pure      $ mkRoomPosition cx cy croomName
+  decodeJson json = ado
+    {x: cx,y: cy,roomName: croomName} ::
+      { x :: Int
+      , y :: Int
+      , roomName :: RoomName
+      } <- decodeJson json
+    in mkRoomPosition cx cy croomName
 

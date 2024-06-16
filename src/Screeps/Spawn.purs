@@ -6,7 +6,10 @@ import Data.Argonaut.Encode.Class (class EncodeJson, encodeJson)
 import Data.Either (Either(Left, Right))
 import Data.Maybe (Maybe)
 import Effect (Effect)
-import Prelude (class Eq, class Show, ($))
+import Prelude
+import Data.Bifunctor (lmap)
+
+import Data.Argonaut.Decode.Error (JsonDecodeError (TypeMismatch))
 import Screeps.BodyPartType (BodyPartType)
 import Screeps.Destructible (class Destructible)
 import Screeps.FFI (NullOrUndefined, runThisEffectFn1, runThisEffectFn2, runThisFn1, toMaybe, toNullable, unsafeField, instanceOf)
@@ -30,7 +33,7 @@ instance spawnHasId       :: HasId      Spawn
     validate = instanceOf "StructureSpawn"
 instance eqSpawn          :: Eq         Spawn where eq = eqById
 instance encodeSpawn      :: EncodeJson Spawn where encodeJson = encodeJsonWithId
-instance decodeSpawn      :: DecodeJson Spawn where decodeJson = decodeJsonWithId
+instance decodeSpawn      :: DecodeJson Spawn where decodeJson = lmap TypeMismatch <<< decodeJsonWithId
 instance structuralSpawn  :: Structural Spawn
 instance refillableSpawn  :: Refillable Spawn
 instance structureSpawn   :: Structure  Spawn where

@@ -6,7 +6,10 @@ import Data.Ord
 import Data.Show
 import Screeps.Structure
 import Screeps.Types
+import Prelude
+import Data.Bifunctor (lmap)
 
+import Data.Argonaut.Decode.Error (JsonDecodeError (TypeMismatch))
 import Data.Argonaut.Decode.Class (class DecodeJson, decodeJson)
 import Data.Argonaut.Encode.Class (class EncodeJson, encodeJson)
 import Data.Map (lookup)
@@ -25,7 +28,7 @@ instance extensionHasId        :: HasId      Extension
   where
     validate = instanceOf "StructureExtension"
 instance encodeExtension       :: EncodeJson Extension where encodeJson = encodeJsonWithId
-instance decodeExtension       :: DecodeJson Extension where decodeJson = decodeJsonWithId
+instance decodeExtension       :: DecodeJson Extension where decodeJson = lmap TypeMismatch <<< decodeJsonWithId
 instance structuralExtension   :: Structural Extension
 instance refillableExtension   :: Refillable Extension
 instance eqExtension           :: Eq         Extension where eq   = eqById

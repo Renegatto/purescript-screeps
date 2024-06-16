@@ -1,8 +1,8 @@
-exports.top          = TOP;
-exports.top_right    = TOP_RIGHT;
-exports.right        = RIGHT;
-exports.bottom_right = BOTTOM_RIGHT;
-exports.bottom       = BOTTOM;
-exports.bottom_left  = BOTTOM_LEFT;
-exports.left         = LEFT;
-exports.top_left     = TOP_LEFT;
+export const top          = TOP;
+export const top_right    = TOP_RIGHT;
+export const right        = RIGHT;
+export const bottom_right = BOTTOM_RIGHT;
+export const bottom       = BOTTOM;
+export const bottom_left  = BOTTOM_LEFT;
+export const left         = LEFT;
+export const top_left     = TOP_LEFT;

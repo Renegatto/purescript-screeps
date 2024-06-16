@@ -7,6 +7,9 @@ import Effect
 import Data.Eq
 import Data.Maybe (Maybe)
 import Data.Show
+import Data.Argonaut.Decode.Error (JsonDecodeError (TypeMismatch))
+import Data.Bifunctor (lmap)
+import Prelude ((<<<))
 
 import Screeps.Decays  (class Decays)
 import Screeps.Destructible (class Destructible)
@@ -23,7 +26,7 @@ instance ownedRampart       :: Owned      Rampart
 instance rampartHasId       :: HasId      Rampart where
   validate = instanceOf "StructureRampart"
 instance encodeRampart      :: EncodeJson Rampart where encodeJson = encodeJsonWithId
-instance decodeRampart      :: DecodeJson Rampart where decodeJson = decodeJsonWithId
+instance decodeRampart      :: DecodeJson Rampart where decodeJson = lmap TypeMismatch <<< decodeJsonWithId
 instance structuralRampart  :: Structural Rampart
 instance decaysRampart      :: Decays     Rampart
 instance structureRampart   :: Structure  Rampart where

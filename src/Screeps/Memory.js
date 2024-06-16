@@ -1,8 +1,8 @@
 "use strict";
 
-exports.getMemoryGlobal = function(){ return Memory; }
-exports.getRawMemoryGlobal = function(){ return RawMemory; }
-exports.getObjectMemory = function (objectType) {
+export const getMemoryGlobal = function(){ return Memory; }
+export const getRawMemoryGlobal = function(){ return RawMemory; }
+export const getObjectMemory = function (objectType) {
     return function                (objectId) {
         return function            (key) {
             if   (!Memory[objectType]          )
@@ -13,7 +13,7 @@ exports.getObjectMemory = function (objectType) {
         }
     }
 }
-exports.setObjectMemory = function(objectType) {
+export const setObjectMemory = function(objectType) {
     return function               (objectId) {
         return function           (key) {
             return function       (value) {

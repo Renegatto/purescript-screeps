@@ -6,6 +6,9 @@ import Data.Argonaut.Decode.Class (class DecodeJson, decodeJson)
 import Data.Maybe         (Maybe)
 import Data.Show          (class Show)
 import Data.Eq            (class Eq)
+import Data.Argonaut.Decode.Error (JsonDecodeError (TypeMismatch))
+import Data.Bifunctor (lmap)
+import Prelude
 
 import Screeps.Destructible (class Destructible)
 import Screeps.FFI        (instanceOf)
@@ -19,7 +22,7 @@ foreign import data Container :: Type
 instance objectContainer      :: RoomObject Container
 instance containerHasId       :: HasId      Container where validate   = instanceOf "StructureContainer"
 instance encodeContainer      :: EncodeJson Container where encodeJson = encodeJsonWithId
-instance decodeContainer      :: DecodeJson Container where decodeJson = decodeJsonWithId
+instance decodeContainer      :: DecodeJson Container where decodeJson = lmap TypeMismatch <<< decodeJsonWithId
 instance structuralContainer  :: Structural Container
 instance storeInContainer     :: Stores     Container
 instance structureContainer   :: Structure  Container where

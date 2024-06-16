@@ -5,17 +5,14 @@ import Data.Eq (class Eq, (==))
 import Data.Functor (map)
 import Data.Ring (negate)
 import Data.Show (class Show)
-
+import Data.Generic.Rep (class Generic)
 import Data.Foldable (sum)
-import Data.Generic.Rep (class Generic, Argument(..), Constructor(..))
-import Data.Generic.Rep.Eq (genericEq)
 import Prelude (($))
 
 newtype BodyPartType = BodyPartType String
-instance genericBodyPartType :: Generic BodyPartType (Constructor "BodyPartType" (Argument String)) where
-  from (BodyPartType x) = Constructor $ Argument x
-  to (Constructor (Argument x)) = BodyPartType x
-instance eqBodyPartType :: Eq BodyPartType where eq = genericEq
+
+derive instance genericBodyPartType :: Generic BodyPartType _
+derive newtype instance eqBodyPartType :: Eq BodyPartType 
 instance showBodyPartType :: Show BodyPartType where show (BodyPartType bpt) = bpt
 
 foreign import part_move :: BodyPartType

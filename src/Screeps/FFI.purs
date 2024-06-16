@@ -4,9 +4,10 @@ module Screeps.FFI where
 import Effect
 import Prelude
 
+import Effect.Exception.Unsafe (unsafeThrow)
 import Control.Monad.Except (runExcept)
 import Data.Array (catMaybes)
-import Data.Either (fromRight)
+import Data.Either (either, fromRight)
 import Data.Function.Uncurried (Fn3, runFn3)
 import Data.Int (fromString)
 import Data.Map (Map, fromFoldable, toUnfoldableUnordered)
@@ -43,7 +44,7 @@ foreign import runThisFn5 :: forall this a b c d e f. String -> this -> a -> b -
 foreign import runThisFn6 :: forall this a b c d e f g. String -> this -> a -> b -> c -> d -> e -> f -> g
 
 foreign import data NullOrUndefined :: Type -> Type
-foreign import null :: forall a. NullOrUndefined a
+foreign import _null :: forall a. NullOrUndefined a
 foreign import undefined :: forall a. NullOrUndefined a
 foreign import notNullOrUndefined :: forall a. a -> NullOrUndefined a
 foreign import isNull :: forall a. NullOrUndefined a -> Boolean
@@ -54,7 +55,7 @@ toMaybe :: forall a. NullOrUndefined a -> Maybe a
 toMaybe n = runFn3 toMaybeImpl n Nothing Just
 
 toNullable :: forall a. Maybe a -> NullOrUndefined a
-toNullable = maybe null notNullOrUndefined
+toNullable = maybe _null notNullOrUndefined
 
 toUndefinable :: forall a. Maybe a -> NullOrUndefined a
 toUndefinable = maybe undefined notNullOrUndefined
@@ -68,10 +69,13 @@ selectMaybes obj = unsafePartial $ selectMaybesImpl isJust fromJust obj
 foreign import instanceOf :: forall a. String -> a -> Boolean
 
 unsafeObjectToStrMap :: forall a. Foreign -> Map String a
-unsafeObjectToStrMap object = unsafePartial $ fromRight $ runExcept do
+unsafeObjectToStrMap object = either throwIfError identity $ runExcept do
   ks <- keys object
   kvs <- flip traverse ks \key -> Tuple <$> pure key <*> (unsafeFromForeign <$> object ! key)
   pure $ fromFoldable kvs
+  where
+    throwIfError err =
+      unsafeThrow $ "unsafeObjectToStrMap: " <> show err
 
 unsafeObjectToIntMap :: forall a. Foreign -> Map Int a
 unsafeObjectToIntMap =

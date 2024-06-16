@@ -4,11 +4,12 @@ module Screeps.Types where
 import Screeps.RoomObject
 
 import Data.Argonaut.Decode.Class (class DecodeJson)
+import Data.Argonaut.Decode.Error (JsonDecodeError (TypeMismatch))
+import Data.Bifunctor (lmap)
 import Data.Argonaut.Encode.Class (class EncodeJson)
-import Data.Generic.Rep (class Generic, Argument(..), Constructor(..))
-import Data.Generic.Rep.Eq (genericEq)
-import Data.Generic.Rep.Show (genericShow)
-import Prelude (class Eq, class Show, show, ($), (<>))
+import Data.Generic.Rep (class Generic)
+import Data.Show.Generic (genericShow)
+import Prelude (class Eq, class Show, show, ($), (<>), (<<<))
 import Screeps.Destructible (class Destructible)
 import Screeps.FFI (instanceOf, unsafeField)
 import Screeps.Id (class HasId, encodeJsonWithId, decodeJsonWithId, eqById)
@@ -25,31 +26,29 @@ instance creepEq           :: Eq           Creep where eq = eqById
 instance showCreepEq       :: Show         Creep where show c = unsafeField "name" c <> "@" <> show (pos c)
 instance creepHasId        :: HasId        Creep where
   validate = instanceOf "Creep"
-instance encodeCreep       :: EncodeJson   Creep where encodeJson = encodeJsonWithId
-instance decodeCreep       :: DecodeJson   Creep where decodeJson = decodeJsonWithId
+instance encodeCreep       :: EncodeJson   Creep where
+  encodeJson = encodeJsonWithId
+instance decodeCreep       :: DecodeJson   Creep where
+  decodeJson = lmap TypeMismatch <<< decodeJsonWithId
 instance destructibleCreep :: Destructible Creep
 
 newtype TerrainMask = TerrainMask Int
-instance genericTerrainMask :: Generic TerrainMask (Constructor "TerrainMask" (Argument Int)) where
-  from (TerrainMask x) = Constructor $ Argument x
-  to (Constructor (Argument x)) = TerrainMask x
-instance eqTerrainMask :: Eq TerrainMask where eq = genericEq
-instance showTerrainMask :: Show TerrainMask where show = genericShow
+derive instance genericTerrainMask :: Generic TerrainMask _
+derive newtype instance eqTerrainMask :: Eq TerrainMask
+instance showTerrainMask :: Show TerrainMask where
+  show = genericShow
 
 newtype Terrain = Terrain String
-instance genericTerrain :: Generic Terrain (Constructor "Terrain" (Argument String)) where
-  from (Terrain x) = Constructor $ Argument x
-  to (Constructor (Argument x)) = Terrain x
-instance eqTerrain :: Eq Terrain where eq = genericEq
-instance showTerrain :: Show Terrain
-  where show (Terrain s) = s
+derive instance genericTerrain :: Generic Terrain _
+derive newtype instance eqTerrain :: Eq Terrain
+instance showTerrain :: Show Terrain where
+  show = genericShow
 
 newtype Mode = Mode String
-instance genericMode :: Generic Mode (Constructor "Mode" (Argument String)) where
-  from (Mode x) = Constructor $ Argument x
-  to (Constructor (Argument x)) = Mode x
-instance eqMode :: Eq Mode where eq = genericEq
-instance showMode :: Show Mode where show = genericShow
+derive instance genericMode :: Generic Mode _
+derive newtype instance eqMode :: Eq Mode
+instance showMode :: Show Mode where
+  show = genericShow
 
 --------------------------------
 -- Helper types and functions --

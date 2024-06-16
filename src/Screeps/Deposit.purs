@@ -11,6 +11,9 @@ module Screeps.Deposit(
   , module Screeps.Regenerates
   ) where
 
+import Data.Argonaut.Decode.Error (JsonDecodeError (TypeMismatch))
+import Data.Bifunctor (lmap)
+import Prelude ((<<<))
 import Data.Argonaut.Encode.Class (class EncodeJson)
 import Data.Argonaut.Decode.Class (class DecodeJson)
 import Data.Eq
@@ -40,7 +43,7 @@ instance anyDepositHasId        :: HasId      AnyDeposit
     validate o = instanceOf "Mineral" o
               || instanceOf "Source"  o
 instance encodeDeposit          :: EncodeJson  AnyDeposit where encodeJson = encodeJsonWithId
-instance decodeDeposit          :: DecodeJson  AnyDeposit where decodeJson = decodeJsonWithId
+instance decodeDeposit          :: DecodeJson  AnyDeposit where decodeJson = lmap TypeMismatch <<< decodeJsonWithId
 instance showDeposit            :: Show        AnyDeposit where show       = caseDeposit show show
 instance eqDeposit              :: Eq          AnyDeposit where eq         = eqById
 instance anyDepositRegenerates  :: Regenerates AnyDeposit
