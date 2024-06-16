@@ -1,0 +1,13 @@
+{
+  "name": "purescript-screeps",
+  "version": "1.0.0",
+  "description": "PureScript bindings for the [Screeps API](http://support.screeps.com/hc/en-us/articles/203084991-API-Reference).",
+  "main": "index.js",
+  "directories": {},
+  "scripts": {},
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "purs-tidy": "^0.11.0"
+  }
+}

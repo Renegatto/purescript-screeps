@@ -4,6 +4,9 @@ psa: src/Main.purs
 	    'src/**/*.purs' \
 	    '.spago/purescript-*/src/**/*.purs'
 
+format:
+	@npx purs-tidy format-in-place "src/**/*.purs"
+
 deploy: src/Main.purs
 	spago build --to localScripts/main.js # -- --censor-codes=ImplicitImport
 
