@@ -6,7 +6,7 @@ import Data.Argonaut.Decode (class DecodeJson, decodeJson)
 import Data.Eq
 import Data.Maybe (Maybe)
 import Data.Show (class Show, show)
-import Data.Argonaut.Decode.Error (JsonDecodeError (TypeMismatch))
+import Data.Argonaut.Decode.Error (JsonDecodeError(TypeMismatch))
 import Data.Bifunctor (lmap)
 import Prelude ((<<<))
 
@@ -17,18 +17,29 @@ import Screeps.RoomObject (class RoomObject)
 import Screeps.Structure
 import Screeps.Types
 
-foreign import data KeeperLair  :: Type
-instance objectKeeperLair       :: RoomObject KeeperLair
-instance keeperLairHasId        :: HasId      KeeperLair where
+foreign import data KeeperLair :: Type
+
+instance objectKeeperLair :: RoomObject KeeperLair
+instance keeperLairHasId :: HasId KeeperLair where
   validate = instanceOf "StructureKeeperLair"
-instance eqKeeperLair           :: Eq         KeeperLair where eq = eqById
-instance ownedKeeperLair        :: Owned      KeeperLair -- TODO: check itEffectect
-instance structuralKeeperLair   :: Structural KeeperLair
-instance structureKeeperLair    :: Structure  KeeperLair where
+
+instance eqKeeperLair :: Eq KeeperLair where
+  eq = eqById
+
+instance ownedKeeperLair :: Owned KeeperLair -- TODO: check itEffectect
+instance structuralKeeperLair :: Structural KeeperLair
+instance structureKeeperLair :: Structure KeeperLair where
   _structureType _ = structure_keeper_lair
-instance encodeKeeperLair       :: EncodeJson KeeperLair where encodeJson = encodeJsonWithId
-instance decodeKeeperLair       :: DecodeJson KeeperLair where decodeJson = lmap TypeMismatch <<< decodeJsonWithId
-instance showKeeperLair         :: Show       KeeperLair where show = showStructure
+
+instance encodeKeeperLair :: EncodeJson KeeperLair where
+  encodeJson = encodeJsonWithId
+
+instance decodeKeeperLair :: DecodeJson KeeperLair where
+  decodeJson = lmap TypeMismatch <<< decodeJsonWithId
+
+instance showKeeperLair :: Show KeeperLair where
+  show = showStructure
+
 instance destructibleKeeperLair :: Destructible KeeperLair
 
 ticksToSpawn :: KeeperLair -> Int

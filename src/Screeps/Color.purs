@@ -7,7 +7,7 @@ import Data.Show.Generic (genericShow)
 newtype Color = Color Int
 
 derive instance Generic Color _
-derive newtype instance eqColor :: Eq Color 
+derive newtype instance eqColor :: Eq Color
 instance showColor :: Show Color where
   show = genericShow
 

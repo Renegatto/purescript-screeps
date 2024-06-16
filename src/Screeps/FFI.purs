@@ -74,10 +74,13 @@ unsafeObjectToStrMap object = either throwIfError identity $ runExcept do
   kvs <- flip traverse ks \key -> Tuple <$> pure key <*> (unsafeFromForeign <$> object ! key)
   pure $ fromFoldable kvs
   where
-    throwIfError err =
-      unsafeThrow $ "unsafeObjectToStrMap: " <> show err
+  throwIfError err =
+    unsafeThrow $ "unsafeObjectToStrMap: " <> show err
 
 unsafeObjectToIntMap :: forall a. Foreign -> Map Int a
 unsafeObjectToIntMap =
-  fromFoldable <<< catMaybes <<< map (\(Tuple k v) -> Tuple <$> fromString k <*> pure v)
-               <<< toUnfoldableUnordered <<< unsafeObjectToStrMap
+  fromFoldable
+    <<< catMaybes
+    <<< map (\(Tuple k v) -> Tuple <$> fromString k <*> pure v)
+    <<< toUnfoldableUnordered
+    <<< unsafeObjectToStrMap

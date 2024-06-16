@@ -3,11 +3,11 @@ module Screeps.Owned where
 
 import Prelude
 
-import Data.Maybe        (Maybe, fromMaybe)
+import Data.Maybe (Maybe, fromMaybe)
 
-import Screeps.ReturnCode(ReturnCode)
-import Screeps.Types     (class Owned)
-import Screeps.FFI       (toMaybe, unsafeField, runThisEffectFn1)
+import Screeps.ReturnCode (ReturnCode)
+import Screeps.Types (class Owned)
+import Screeps.FFI (toMaybe, unsafeField, runThisEffectFn1)
 
 my :: forall a. Owned a => a -> Boolean
 my struc = fromMaybe false $ toMaybe $ unsafeField "my" struc

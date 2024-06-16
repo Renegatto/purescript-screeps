@@ -7,7 +7,7 @@ import Data.Eq
 import Data.Maybe (Maybe)
 import Data.Show
 
-import Data.Argonaut.Decode.Error (JsonDecodeError (TypeMismatch))
+import Data.Argonaut.Decode.Error (JsonDecodeError(TypeMismatch))
 import Data.Bifunctor (lmap)
 import Prelude ((<<<))
 import Screeps.Decays (class Decays)
@@ -20,18 +20,29 @@ import Screeps.Structure
 import Screeps.Types
 
 foreign import data Portal :: Type
-instance objectPortal      :: RoomObject Portal
-instance ownedPortal       :: Owned      Portal
-instance structuralPortal  :: Structural Portal
-instance portalDecays      :: Decays     Portal
-instance portalHasId       :: HasId      Portal where
+
+instance objectPortal :: RoomObject Portal
+instance ownedPortal :: Owned Portal
+instance structuralPortal :: Structural Portal
+instance portalDecays :: Decays Portal
+instance portalHasId :: HasId Portal where
   validate = instanceOf "StructurePortal"
-instance encodePortal      :: EncodeJson Portal where encodeJson = encodeJsonWithId
-instance decodePortal      :: DecodeJson Portal where decodeJson = lmap TypeMismatch <<< decodeJsonWithId
-instance structurePortal   :: Structure  Portal where
+
+instance encodePortal :: EncodeJson Portal where
+  encodeJson = encodeJsonWithId
+
+instance decodePortal :: DecodeJson Portal where
+  decodeJson = lmap TypeMismatch <<< decodeJsonWithId
+
+instance structurePortal :: Structure Portal where
   _structureType _ = structure_portal
-instance eqPortal          :: Eq         Portal where eq   = eqById
-instance showPortal        :: Show       Portal where show = showStructure
+
+instance eqPortal :: Eq Portal where
+  eq = eqById
+
+instance showPortal :: Show Portal where
+  show = showStructure
+
 instance destructiblePortal :: Destructible Portal
 
 destination :: Portal -> RoomPosition

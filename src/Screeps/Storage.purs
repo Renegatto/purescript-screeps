@@ -4,12 +4,12 @@ module Screeps.Storage where
 import Data.Argonaut.Encode (class EncodeJson, encodeJson)
 import Data.Argonaut.Decode (class DecodeJson, decodeJson)
 import Data.Eq
-import Data.Maybe           (Maybe)
+import Data.Maybe (Maybe)
 import Data.Show
 import Prelude
 import Data.Bifunctor (lmap)
 
-import Data.Argonaut.Decode.Error (JsonDecodeError (TypeMismatch))
+import Data.Argonaut.Decode.Error (JsonDecodeError(TypeMismatch))
 import Screeps.Destructible (class Destructible)
 import Screeps.FFI (instanceOf)
 import Screeps.Id (class HasId, decodeJsonWithId, encodeJsonWithId, eqById)
@@ -19,19 +19,30 @@ import Screeps.Structure
 import Screeps.Types
 
 foreign import data Storage :: Type
-instance objectStorage      :: RoomObject Storage
-instance ownedStorage       :: Owned      Storage
-instance storageHasId       :: HasId      Storage
+
+instance objectStorage :: RoomObject Storage
+instance ownedStorage :: Owned Storage
+instance storageHasId :: HasId Storage
   where
-    validate = instanceOf "StructureStorage"
-instance encodeStorage      :: EncodeJson Storage where encodeJson = encodeJsonWithId
-instance decodeStorage      :: DecodeJson Storage where decodeJson = lmap TypeMismatch <<< decodeJsonWithId
-instance structuralStorage  :: Structural Storage
-instance storageStores      :: Stores     Storage
-instance showStorage        :: Show       Storage where show = showStructure
-instance eqStorage          :: Eq         Storage where eq   = eqById
-instance structureStorage   :: Structure  Storage where
+  validate = instanceOf "StructureStorage"
+
+instance encodeStorage :: EncodeJson Storage where
+  encodeJson = encodeJsonWithId
+
+instance decodeStorage :: DecodeJson Storage where
+  decodeJson = lmap TypeMismatch <<< decodeJsonWithId
+
+instance structuralStorage :: Structural Storage
+instance storageStores :: Stores Storage
+instance showStorage :: Show Storage where
+  show = showStructure
+
+instance eqStorage :: Eq Storage where
+  eq = eqById
+
+instance structureStorage :: Structure Storage where
   _structureType _ = structure_storage
+
 instance destructibleStorage :: Destructible Storage
 
 toStorage :: AnyStructure -> Maybe Storage

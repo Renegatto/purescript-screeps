@@ -9,7 +9,7 @@ import Data.Show
 import Prelude
 import Data.Bifunctor (lmap)
 
-import Data.Argonaut.Decode.Error (JsonDecodeError (TypeMismatch))
+import Data.Argonaut.Decode.Error (JsonDecodeError(TypeMismatch))
 import Screeps.Destructible (class Destructible)
 import Screeps.FFI (instanceOf)
 import Screeps.Id (class HasId, decodeJsonWithId, encodeJsonWithId, eqById)
@@ -17,18 +17,29 @@ import Screeps.RoomObject (class RoomObject)
 import Screeps.Structure
 import Screeps.Types
 
-foreign import data Extractor  :: Type
-instance objectExtractor       :: RoomObject Extractor
-instance ownedExtractor        :: Owned      Extractor
-instance extractorHasId        :: HasId      Extractor where
+foreign import data Extractor :: Type
+
+instance objectExtractor :: RoomObject Extractor
+instance ownedExtractor :: Owned Extractor
+instance extractorHasId :: HasId Extractor where
   validate = instanceOf "StructureExtractor"
-instance encodeExtractor       :: EncodeJson Extractor where encodeJson = encodeJsonWithId
-instance decodeExtractor       :: DecodeJson Extractor where decodeJson = lmap TypeMismatch <<< decodeJsonWithId
-instance structuralExtractor   :: Structural Extractor
-instance structureExtractor    :: Structure  Extractor where
+
+instance encodeExtractor :: EncodeJson Extractor where
+  encodeJson = encodeJsonWithId
+
+instance decodeExtractor :: DecodeJson Extractor where
+  decodeJson = lmap TypeMismatch <<< decodeJsonWithId
+
+instance structuralExtractor :: Structural Extractor
+instance structureExtractor :: Structure Extractor where
   _structureType _ = structure_extractor
-instance eqExtractor           :: Eq         Extractor where eq   = eqById
-instance showExtractor         :: Show       Extractor where show = showStructure
+
+instance eqExtractor :: Eq Extractor where
+  eq = eqById
+
+instance showExtractor :: Show Extractor where
+  show = showStructure
+
 instance destructibleExtractor :: Destructible Extractor
 
 toExtractor :: AnyStructure -> Maybe Extractor

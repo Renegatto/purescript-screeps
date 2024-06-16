@@ -30,15 +30,17 @@ foreign import rampart_decay_time :: Int
 foreign import rampart_hits :: Int
 -- | From 2 to 8
 foreign import _rampart_hits_max :: Foreign
+
 rampart_hits_max :: Map Int Int
 rampart_hits_max = unsafeObjectToIntMap _rampart_hits_max
+
 {-  { "2" :: Int
-  , "3" :: Int
-  , "4" :: Int
-  , "5" :: Int
-  , "6" :: Int
-  , "7" :: Int
-  , "8" :: Int }-}
+, "3" :: Int
+, "4" :: Int
+, "5" :: Int
+, "6" :: Int
+, "7" :: Int
+, "8" :: Int }-}
 
 foreign import energy_regen_time :: Int
 foreign import energy_decay :: Int
@@ -58,17 +60,19 @@ foreign import wall_hits_max :: Int
 foreign import extension_hits :: Int
 -- | From 0 to 8
 foreign import _extension_energy_capacity :: Foreign
+
 extension_energy_capacity :: Map Int Int
 extension_energy_capacity = unsafeObjectToIntMap _extension_energy_capacity
+
 {-  { "0" :: Int
-  , "1" :: Int
-  , "2" :: Int
-  , "3" :: Int
-  , "4" :: Int
-  , "5" :: Int
-  , "6" :: Int
-  , "7" :: Int
-  , "8" :: Int }-}
+, "1" :: Int
+, "2" :: Int
+, "3" :: Int
+, "4" :: Int
+, "5" :: Int
+, "6" :: Int
+, "7" :: Int
+, "8" :: Int }-}
 
 foreign import road_hits :: Int
 foreign import road_wearout :: Int
@@ -84,26 +88,29 @@ foreign import link_loss_ratio :: Number
 foreign import storage_capacity :: Int
 foreign import storage_hits :: Int
 
-foreign import construction_cost ::
-  { spawn :: Int
-  , extension :: Int
-  , road :: Int
-  , constructedWall :: Int
-  , rampart :: Int
-  , link :: Int
-  , storage :: Int
-  , tower :: Int
-  , observer :: Int
-  , powerSpawn :: Int
-  , extractor :: Int
-  , lab :: Int
-  , terminal :: Int
-  , container :: Int
-  , nuker :: Int }
+foreign import construction_cost
+  :: { spawn :: Int
+     , extension :: Int
+     , road :: Int
+     , constructedWall :: Int
+     , rampart :: Int
+     , link :: Int
+     , storage :: Int
+     , tower :: Int
+     , observer :: Int
+     , powerSpawn :: Int
+     , extractor :: Int
+     , lab :: Int
+     , terminal :: Int
+     , container :: Int
+     , nuker :: Int
+     }
+
 foreign import construction_cost_road_swamp_ratio :: Int
 
 -- | 1 to 8
 foreign import _controller_levels :: Foreign
+
 controller_levels :: Map Int Int
 controller_levels = unsafeObjectToIntMap _controller_levels
 
@@ -111,22 +118,23 @@ controller_levels = unsafeObjectToIntMap _controller_levels
 type StructureInfo = Map Int Int
 
 -- | NOTE: there is better interface Screeps.Structure.numStructures
-foreign import controller_structures ::
-  { spawn :: StructureInfo
-  , extension :: StructureInfo
-  , road :: StructureInfo
-  , constructedWall :: StructureInfo
-  , rampart :: StructureInfo
-  , link :: StructureInfo
-  , storage :: StructureInfo
-  , tower :: StructureInfo
-  , observer :: StructureInfo
-  , powerSpawn :: StructureInfo
-  , extractor :: StructureInfo
-  , lab :: StructureInfo
-  , terminal :: StructureInfo
-  , container :: StructureInfo
-  , nuker :: StructureInfo }
+foreign import controller_structures
+  :: { spawn :: StructureInfo
+     , extension :: StructureInfo
+     , road :: StructureInfo
+     , constructedWall :: StructureInfo
+     , rampart :: StructureInfo
+     , link :: StructureInfo
+     , storage :: StructureInfo
+     , tower :: StructureInfo
+     , observer :: StructureInfo
+     , powerSpawn :: StructureInfo
+     , extractor :: StructureInfo
+     , lab :: StructureInfo
+     , terminal :: StructureInfo
+     , container :: StructureInfo
+     , nuker :: StructureInfo
+     }
 
 foreign import controller_downgrade :: StructureInfo
 foreign import controller_claim_downgrade :: Number
@@ -186,14 +194,16 @@ foreign import max_construction_sites :: Int
 foreign import max_creep_size :: Int
 
 foreign import mineral_regen_time :: Int
-foreign import mineral_min_amount ::
-  { "H" :: Int
-  , "O" :: Int
-  , "L" :: Int
-  , "K" :: Int
-  , "Z" :: Int
-  , "U" :: Int
-  , "X" :: Int }
+foreign import mineral_min_amount
+  :: { "H" :: Int
+     , "O" :: Int
+     , "L" :: Int
+     , "K" :: Int
+     , "Z" :: Int
+     , "U" :: Int
+     , "X" :: Int
+     }
+
 foreign import mineral_random_factor :: Int
 
 foreign import terminal_capacity :: Int
@@ -213,8 +223,9 @@ foreign import nuker_energy_capacity :: Int
 foreign import nuker_ghodium_capacity :: Int
 foreign import nuke_land_time :: Int
 foreign import nuke_range :: Int
-foreign import nuke_damage ::
-  { "0" :: Int
-  , "1" :: Int
-  , "4" :: Int }
+foreign import nuke_damage
+  :: { "0" :: Int
+     , "1" :: Int
+     , "4" :: Int
+     }
 

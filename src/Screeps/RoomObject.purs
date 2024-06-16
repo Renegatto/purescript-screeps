@@ -34,7 +34,7 @@ instance eqRoom :: Eq Room where
   eq = eq `on` name
 
 -- | Any `RoomObject` with a location, and room containing it. 
-class RoomObject     a
+class RoomObject a
 
 name :: Room -> RoomName
 name = unsafeField "name"
@@ -45,27 +45,29 @@ instance encodeJson :: EncodeJson Room where
 foreign import lookupRoom :: RoomName -> Effect (NullOrUndefined Room)
 
 instance decodeJson :: DecodeJson Room where
-  decodeJson           json = do
+  decodeJson json = do
     roomNam <- decodeJson json
     case unsafePerformEffect $ try $ map toMaybe $ lookupRoom roomNam of
-         Left err -> Left
-          $ TypeMismatch
-          $ "Cannot access the room: "
-          <> show roomNam
-          <> " because of: "
-          <> show err
-         Right (Nothing) -> Left
-           $ TypeMismatch
-           $ "Cannot access room: " <> show roomNam
-         Right (Just r ) -> Right r
+      Left err -> Left
+        $ TypeMismatch
+        $ "Cannot access the room: "
+            <> show roomNam
+            <> " because of: "
+            <> show err
+      Right (Nothing) -> Left
+        $ TypeMismatch
+        $ "Cannot access room: " <> show roomNam
+      Right (Just r) -> Right r
 
 foreign import data AnyRoomObject :: Type
 
-instance anyRoomObject       :: RoomObject AnyRoomObject
-instance anyRoomObjectHasId  :: HasId      AnyRoomObject where
+instance anyRoomObject :: RoomObject AnyRoomObject
+instance anyRoomObjectHasId :: HasId AnyRoomObject where
   validate = instanceOf "RoomObject"
+
 instance encodeAnyRoomObject :: EncodeJson AnyRoomObject where
   encodeJson = encodeJsonWithId
+
 instance decodeAnyRoomObject :: DecodeJson AnyRoomObject where
   decodeJson = lmap TypeMismatch <<< decodeJsonWithId
 
@@ -75,7 +77,9 @@ room = unsafeField "room"
 pos :: forall a. RoomObject a => a -> RoomPosition
 pos = unsafeField "pos"
 
-asAnyRoomObject :: forall     ro.
-                   RoomObject ro
-                => ro -> AnyRoomObject
-asAnyRoomObject  = unsafeCoerce
+asAnyRoomObject
+  :: forall ro
+   . RoomObject ro
+  => ro
+  -> AnyRoomObject
+asAnyRoomObject = unsafeCoerce

@@ -17,14 +17,16 @@ import Screeps.Types (Creep, WorldMap)
 foreign import unsafeGameField :: forall a. String -> Effect a
 
 type Gcl =
-  { level         :: Int
-  , progress      :: Int
-  , progressTotal :: Int }
+  { level :: Int
+  , progress :: Int
+  , progressTotal :: Int
+  }
 
 type Cpu =
-  { limit     :: Int
+  { limit :: Int
   , tickLimit :: Int
-  , bucket    :: Int }
+  , bucket :: Int
+  }
 
 constructionSites :: Effect (Map.Map String ConstructionSite)
 constructionSites = unsafeGameField "constructionSites"
@@ -37,7 +39,6 @@ creeps = unsafeObjectToStrMap <$> unsafeGameField "creeps"
 
 flags :: Effect (Map.Map String Flag)
 flags = unsafeObjectToStrMap <$> unsafeGameField "flags"
-
 
 foreign import gcl :: Gcl
 
@@ -60,6 +61,6 @@ time = unsafeGameField "time"
 
 foreign import getUsedCpu :: Effect Number
 
-foreign import notify ::  String -> Effect Unit
+foreign import notify :: String -> Effect Unit
 
-foreign import notify_ ::  String -> Int -> Effect Unit
+foreign import notify_ :: String -> Int -> Effect Unit

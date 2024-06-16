@@ -3,45 +3,49 @@ module Screeps.Mineral where
 
 import Data.Argonaut.Encode (class EncodeJson, encodeJson)
 import Data.Argonaut.Decode (class DecodeJson, decodeJson)
-import Data.Monoid          ((<>))
-import Data.Show            (class Show,       show)
+import Data.Monoid ((<>))
+import Data.Show (class Show, show)
 
-import Screeps.FFI         (unsafeField, instanceOf)
+import Screeps.FFI (unsafeField, instanceOf)
 import Screeps.Id
 import Screeps.Regenerates (class Regenerates)
-import Screeps.RoomObject  (class RoomObject, pos)
-import Screeps.Resource    (ResourceType)
-import Data.Argonaut.Decode.Error (JsonDecodeError (TypeMismatch))
+import Screeps.RoomObject (class RoomObject, pos)
+import Screeps.Resource (ResourceType)
+import Data.Argonaut.Decode.Error (JsonDecodeError(TypeMismatch))
 import Data.Bifunctor (lmap)
 import Prelude ((<<<))
 
 foreign import data Mineral :: Type
-instance objectMineral      :: RoomObject  Mineral
+
+instance objectMineral :: RoomObject Mineral
 instance mineralRegenerates :: Regenerates Mineral
-instance mineralHasId       :: HasId       Mineral
+instance mineralHasId :: HasId Mineral
   where
-    validate = instanceOf "Mineral"
-instance encodeMineral       :: EncodeJson Mineral where
+  validate = instanceOf "Mineral"
+
+instance encodeMineral :: EncodeJson Mineral where
   encodeJson = encodeJsonWithId
-instance decodeMineral       :: DecodeJson Mineral where
+
+instance decodeMineral :: DecodeJson Mineral where
   decodeJson = lmap TypeMismatch <<< decodeJsonWithId
-instance showMineral         :: Show       Mineral where
+
+instance showMineral :: Show Mineral where
   show m = show (mineralType m) <> "@" <> show (pos m)
 
 mineralAmount :: Mineral -> Int
-mineralAmount  = unsafeField "mineralAmount"
+mineralAmount = unsafeField "mineralAmount"
 
 mineralType :: Mineral -> ResourceType
-mineralType  = unsafeField "mineralType"
+mineralType = unsafeField "mineralType"
 
-foreign import resource_hydrogen  :: ResourceType
-foreign import resource_oxygen    :: ResourceType
-foreign import resource_utrium    :: ResourceType
+foreign import resource_hydrogen :: ResourceType
+foreign import resource_oxygen :: ResourceType
+foreign import resource_utrium :: ResourceType
 foreign import resource_lemergium :: ResourceType
-foreign import resource_keanium   :: ResourceType
-foreign import resource_zynthium  :: ResourceType
-foreign import resource_catalyst  :: ResourceType
-foreign import resource_ghodium   :: ResourceType
+foreign import resource_keanium :: ResourceType
+foreign import resource_zynthium :: ResourceType
+foreign import resource_catalyst :: ResourceType
+foreign import resource_ghodium :: ResourceType
 
 foreign import resource_hydroxide :: ResourceType
 foreign import resource_zynthium_keanite :: ResourceType

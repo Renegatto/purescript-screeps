@@ -1,70 +1,85 @@
 -- | Corresponds to the Screeps API [Room](http://support.screeps.com/hc/en-us/articles/203079011-Room)
 module Screeps.Room where
 
-import Prelude                          (map, ($), (+), (-), (<<<))
-import Effect                (Effect)
-import Data.Argonaut.Core               (Json, toArray)
-import Data.Either                      (Either(Left,Right))
-import Data.Maybe                       (Maybe(..), maybe)
+import Prelude (map, ($), (+), (-), (<<<))
+import Effect (Effect)
+import Data.Argonaut.Core (Json, toArray)
+import Data.Either (Either(Left, Right))
+import Data.Maybe (Maybe(..), maybe)
 
-import Screeps.Color                    (Color)
-import Screeps.Controller               (Controller)
-import Screeps.FFI (runThisEffectFn1, runThisEffectFn2, runThisEffectFn3, runThisEffectFn4, runThisEffectFn5,
-                    runThisFn1,    runThisFn2,    runThisFn3,    runThisFn6,
-                    selectMaybes,  toMaybe,
-                    unsafeField,   unsafeOptField, instanceOf)
-import Screeps.FindType                 (FindType, LookType, Path)
-import Screeps.Id                       (class HasId, validate)
-import Screeps.Names                    (RoomName)
-import Screeps.ReturnCode               (ReturnCode)
-import Screeps.RoomObject               (Room, class RoomObject)
-import Screeps.RoomPosition.Type        (RoomPosition, x, y, mkRoomPosition)
-import Screeps.Storage                  (Storage)
-import Screeps.Structure                (StructureType)
-import Screeps.Terminal                 (Terminal)
-import Screeps.Types                    (FilterFn, Mode, TargetPosition(..), Terrain)
-import Unsafe.Coerce                    (unsafeCoerce)
+import Screeps.Color (Color)
+import Screeps.Controller (Controller)
+import Screeps.FFI
+  ( runThisEffectFn1
+  , runThisEffectFn2
+  , runThisEffectFn3
+  , runThisEffectFn4
+  , runThisEffectFn5
+  , runThisFn1
+  , runThisFn2
+  , runThisFn3
+  , runThisFn6
+  , selectMaybes
+  , toMaybe
+  , unsafeField
+  , unsafeOptField
+  , instanceOf
+  )
+import Screeps.FindType (FindType, LookType, Path)
+import Screeps.Id (class HasId, validate)
+import Screeps.Names (RoomName)
+import Screeps.ReturnCode (ReturnCode)
+import Screeps.RoomObject (Room, class RoomObject)
+import Screeps.RoomPosition.Type (RoomPosition, x, y, mkRoomPosition)
+import Screeps.Storage (Storage)
+import Screeps.Structure (StructureType)
+import Screeps.Terminal (Terminal)
+import Screeps.Types (FilterFn, Mode, TargetPosition(..), Terrain)
+import Unsafe.Coerce (unsafeCoerce)
 
 foreign import data AnyRoomObject :: Type
-instance anyRoomObject         :: RoomObject AnyRoomObject
-instance anyRoomObjectHasId    :: HasId      AnyRoomObject where
+
+instance anyRoomObject :: RoomObject AnyRoomObject
+instance anyRoomObjectHasId :: HasId AnyRoomObject where
   validate = instanceOf "RoomObject"
 
-fromAnyRoomObject :: forall ro.
-                     HasId  ro
-                  => AnyRoomObject
-                  -> Maybe ro
+fromAnyRoomObject
+  :: forall ro
+   . HasId ro
+  => AnyRoomObject
+  -> Maybe ro
 fromAnyRoomObject ro =
-    if validate    o
-       then Just   o
-       else Nothing
+  if validate o then Just o
+  else Nothing
   where
-    o = unsafeCoerce ro
+  o = unsafeCoerce ro
 
 -- TODO: costCallback option
 type PathOptions o =
-  { ignoreCreeps                 :: Maybe  Boolean
-  , ignoreDestructibleStructures :: Maybe  Boolean
-  , ignoreRoads                  :: Maybe  Boolean
-  , ignore                       :: Maybe (Array RoomPosition)
-  , avoid                        :: Maybe (Array RoomPosition)
-  , maxOps                       :: Maybe  Int
-  , heuristicWeight              :: Maybe  Number
-  , serialize                    :: Maybe  Boolean
-  , maxRooms                     :: Maybe  Int
-  | o }
+  { ignoreCreeps :: Maybe Boolean
+  , ignoreDestructibleStructures :: Maybe Boolean
+  , ignoreRoads :: Maybe Boolean
+  , ignore :: Maybe (Array RoomPosition)
+  , avoid :: Maybe (Array RoomPosition)
+  , maxOps :: Maybe Int
+  , heuristicWeight :: Maybe Number
+  , serialize :: Maybe Boolean
+  , maxRooms :: Maybe Int
+  | o
+  }
 
 pathOpts :: PathOptions ()
 pathOpts =
-  { ignoreCreeps:                 Nothing
+  { ignoreCreeps: Nothing
   , ignoreDestructibleStructures: Nothing
-  , ignoreRoads:                  Nothing
-  , ignore:                       Nothing
-  , avoid:                        Nothing
-  , maxOps:                       Nothing
-  , heuristicWeight:              Nothing
-  , serialize:                    Nothing
-  , maxRooms:                     Nothing }
+  , ignoreRoads: Nothing
+  , ignore: Nothing
+  , avoid: Nothing
+  , maxOps: Nothing
+  , heuristicWeight: Nothing
+  , serialize: Nothing
+  , maxRooms: Nothing
+  }
 
 controller :: Room -> Maybe Controller
 controller room = toMaybe $ unsafeField "controller" room
@@ -129,12 +144,12 @@ find = runThisFn1 "find"
 find' :: forall a. Room -> FindType a -> FilterFn a -> Array a
 find' room findType filter = runThisFn2 "find" room findType { filter }
 
-foreign import findExitToImpl ::
-  Room ->
-  RoomName ->
-  (ReturnCode -> Either ReturnCode (FindType RoomPosition)) ->
-  (FindType RoomPosition -> Either ReturnCode (FindType RoomPosition)) ->
-  Either ReturnCode (FindType RoomPosition)
+foreign import findExitToImpl
+  :: Room
+  -> RoomName
+  -> (ReturnCode -> Either ReturnCode (FindType RoomPosition))
+  -> (FindType RoomPosition -> Either ReturnCode (FindType RoomPosition))
+  -> Either ReturnCode (FindType RoomPosition)
 
 findExitTo :: Room -> RoomName -> Either ReturnCode (FindType RoomPosition)
 findExitTo room otherRoomName = findExitToImpl room otherRoomName Left Right
@@ -151,53 +166,57 @@ getPositionAt = runThisFn2 "getPositionAt"
 -- lookAt omitted - use lookForAt
 -- lookAtArea omitted - use lookForAtArea
 
-data LookResult a = LookResult {
-    resultType    :: LookType a
-  , terrain       :: Maybe Terrain
+data LookResult a = LookResult
+  { resultType :: LookType a
+  , terrain :: Maybe Terrain
   , structureType :: Maybe StructureType
-  , x             :: Int
-  , y             :: Int
+  , x :: Int
+  , y :: Int
   }
 
-decodeLookResults :: forall a. Json
-                  -> Either String
-                           (Array (LookResult a))
-decodeLookResults = maybe (Left      "Top object is not an array")
-                          (Right <<< map decodeIt                )
-                <<< toArray
+decodeLookResults
+  :: forall a
+   . Json
+  -> Either String
+       (Array (LookResult a))
+decodeLookResults =
+  maybe (Left "Top object is not an array")
+    (Right <<< map decodeIt)
+    <<< toArray
 
 decodeIt :: forall a. Json -> LookResult a
 decodeIt o = LookResult { resultType, terrain, structureType, x, y }
   where
-    resultType    = unsafeField    "type"          o
-    terrain       = unsafeOptField "terrain"       o
-    structureType = unsafeOptField "structureType" o
-    x             = unsafeField    "x"             o
-    y             = unsafeField    "y"             o
+  resultType = unsafeField "type" o
+  terrain = unsafeOptField "terrain" o
+  structureType = unsafeOptField "structureType" o
+  x = unsafeField "x" o
+  y = unsafeField "y" o
 
-lookForAt :: forall         a.
-             Room
-          -> LookType       a
-          -> TargetPosition a
-          -> (Array   a)
-lookForAt room lookType (TargetPt  x' y') = runThisFn3 "lookForAt" room lookType x' y'
-lookForAt room lookType (TargetPos pos  ) = runThisFn2 "lookForAt" room lookType pos
-lookForAt room lookType (TargetObj obj  ) = runThisFn2 "lookForAt" room lookType obj
+lookForAt
+  :: forall a
+   . Room
+  -> LookType a
+  -> TargetPosition a
+  -> (Array a)
+lookForAt room lookType (TargetPt x' y') = runThisFn3 "lookForAt" room lookType x' y'
+lookForAt room lookType (TargetPos pos) = runThisFn2 "lookForAt" room lookType pos
+lookForAt room lookType (TargetObj obj) = runThisFn2 "lookForAt" room lookType obj
 
 -- TODO: Make obsolete, since this function is buggy
 -- TODO: Make it nicer, by selecting x/y from two positions.
 lookForAtArea :: forall a. Room -> LookType a -> Int -> Int -> Int -> Int -> Either String (Array (LookResult a))
 lookForAtArea r ty top left bot right = decodeLookResults
-                                      -- $ debugIt "result"
-                                      $ runThisFn6 "lookForAtArea" r ty top left bot right true
+  -- $ debugIt "result"
+  $ runThisFn6 "lookForAtArea" r ty top left bot right true
 
 lookForInRange :: forall a. Room -> LookType a -> RoomPosition -> Int -> Either String (Array (LookResult a))
-lookForInRange r ty p range = lookForAtArea r ty (y p-range)
-                                                 (x p-range)
-                                                 (y p+range)
-                                                 (x p+range)
+lookForInRange r ty p range = lookForAtArea r ty (y p - range)
+  (x p - range)
+  (y p + range)
+  (x p + range)
 
 -- | Geographic centre of a room with a given name.
-geoCentre   :: RoomName -> RoomPosition
+geoCentre :: RoomName -> RoomPosition
 geoCentre rn = mkRoomPosition 24 24 rn
 

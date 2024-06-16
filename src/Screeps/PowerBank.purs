@@ -6,35 +6,46 @@ import Data.Argonaut.Decode.Class (class DecodeJson, decodeJson)
 import Data.Eq
 import Data.Maybe (Maybe)
 import Data.Show
-import Data.Argonaut.Decode.Error (JsonDecodeError (TypeMismatch))
+import Data.Argonaut.Decode.Error (JsonDecodeError(TypeMismatch))
 import Data.Bifunctor (lmap)
 import Prelude ((<<<))
 
-import Screeps.Decays    (class Decays)
+import Screeps.Decays (class Decays)
 import Screeps.Destructible (class Destructible)
-import Screeps.FFI       (unsafeField, instanceOf)
+import Screeps.FFI (unsafeField, instanceOf)
 import Screeps.Id
 import Screeps.Structure
 import Screeps.Types
 import Screeps.RoomObject (class RoomObject)
 
-foreign import data PowerBank  :: Type
-instance objectPowerBank       :: RoomObject PowerBank
-instance ownedPowerBank        :: Owned      PowerBank
-instance structuralPowerBank   :: Structural PowerBank
-instance powerBankHasId        :: HasId      PowerBank where
-    validate = instanceOf "StructurePowerBank"
-instance encodePowerBank       :: EncodeJson PowerBank where encodeJson = encodeJsonWithId
-instance decodePowerBank       :: DecodeJson PowerBank where decodeJson = lmap TypeMismatch <<< decodeJsonWithId
-instance structurePowerBank    :: Structure  PowerBank where
-    _structureType _ = structure_power_bank
-instance decaysPowerBank       :: Decays     PowerBank
-instance eqPowerBank           :: Eq         PowerBank where eq   = eqById
-instance showPowerBank         :: Show       PowerBank where show = showStructure
+foreign import data PowerBank :: Type
+
+instance objectPowerBank :: RoomObject PowerBank
+instance ownedPowerBank :: Owned PowerBank
+instance structuralPowerBank :: Structural PowerBank
+instance powerBankHasId :: HasId PowerBank where
+  validate = instanceOf "StructurePowerBank"
+
+instance encodePowerBank :: EncodeJson PowerBank where
+  encodeJson = encodeJsonWithId
+
+instance decodePowerBank :: DecodeJson PowerBank where
+  decodeJson = lmap TypeMismatch <<< decodeJsonWithId
+
+instance structurePowerBank :: Structure PowerBank where
+  _structureType _ = structure_power_bank
+
+instance decaysPowerBank :: Decays PowerBank
+instance eqPowerBank :: Eq PowerBank where
+  eq = eqById
+
+instance showPowerBank :: Show PowerBank where
+  show = showStructure
+
 instance destructiblePowerBank :: Destructible PowerBank
 
 power :: PowerBank -> Int
-power  = unsafeField "power"
+power = unsafeField "power"
 
 toPowerBank :: AnyStructure -> Maybe PowerBank
 toPowerBank a = fromAnyStructure a

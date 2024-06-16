@@ -1,6 +1,6 @@
 module Screeps.Progress where
 
-import Screeps.FFI(unsafeField)
+import Screeps.FFI (unsafeField)
 
 class Progress a
 

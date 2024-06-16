@@ -19,8 +19,12 @@ foreign import data RawMemoryGlobal :: Type
 foreign import getRawMemoryGlobal :: Effect RawMemoryGlobal
 
 foreign import getObjectMemory :: String -> String -> String -> Json
-foreign import setObjectMemory :: String -> String -> String -> Json
-                               -> Effect Unit
+foreign import setObjectMemory
+  :: String
+  -> String
+  -> String
+  -> Json
+  -> Effect Unit
 
 get :: forall a. (DecodeJson a) => MemoryGlobal -> String -> Effect (Either String a)
 get memoryGlobal key = lmap show <<< decodeJson <$> unsafeGetFieldEffect key memoryGlobal

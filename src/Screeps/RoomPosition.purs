@@ -19,10 +19,11 @@ import Screeps.Structure (StructureType)
 import Screeps.Types (FilterFn, TargetPosition(..))
 import Unsafe.Coerce (unsafeCoerce)
 
-data      FindContext a =
-  OfType (FindType    a     ) |
-  OfObj  (Array       a     ) | -- should be RoomObject a
-  OfPos  (Array RoomPosition)
+data FindContext a
+  = OfType (FindType a)
+  | OfObj (Array a)
+  | -- should be RoomObject a
+    OfPos (Array RoomPosition)
 
 -- Type safety lost by dropping effect rows in PureScript 0.12. For use only
 -- with exception effects.
@@ -31,7 +32,8 @@ tryPure = unsafePerformEffect <<< try
 
 type ClosestPathOptions = PathOptions
   ( filter :: Maybe (forall a. a -> Boolean)
-  , algorithm :: Maybe FindAlgorithm )
+  , algorithm :: Maybe FindAlgorithm
+  )
 
 newtype FindAlgorithm = FindAlgorithm String
 
@@ -57,32 +59,40 @@ closestPathOpts =
   }
 
 unwrapContext :: forall a b. FindContext a -> b
-unwrapContext (OfType findType ) = unsafeCoerce findType
-unwrapContext (OfObj  objects  ) = unsafeCoerce objects
-unwrapContext (OfPos  positions) = unsafeCoerce positions
+unwrapContext (OfType findType) = unsafeCoerce findType
+unwrapContext (OfObj objects) = unsafeCoerce objects
+unwrapContext (OfPos positions) = unsafeCoerce positions
 
-createConstructionSite ::  RoomPosition
-                       -> StructureType
-                       -> Effect ReturnCode
+createConstructionSite
+  :: RoomPosition
+  -> StructureType
+  -> Effect ReturnCode
 createConstructionSite = runThisEffectFn1 "createConstructionSite"
 
-createFlag ::  RoomPosition
-           -> Effect ReturnCode
+createFlag
+  :: RoomPosition
+  -> Effect ReturnCode
 createFlag = runThisEffectFn0 "createFlag"
 
-createFlagWithName ::  RoomPosition
-                   -> String
-                   -> Effect ReturnCode
+createFlagWithName
+  :: RoomPosition
+  -> String
+  -> Effect ReturnCode
 createFlagWithName pos name = runThisEffectFn1 "createFlag" pos name
 
-createFlagWithColor ::  RoomPosition
-                    -> String
-                    -> Color
-                    -> Effect ReturnCode
+createFlagWithColor
+  :: RoomPosition
+  -> String
+  -> Color
+  -> Effect ReturnCode
 createFlagWithColor pos name color = runThisEffectFn2 "createFlag" pos name color
 
-createFlagWithColors ::  RoomPosition -> String -> Color -> Color
-                     -> Effect ReturnCode
+createFlagWithColors
+  :: RoomPosition
+  -> String
+  -> Color
+  -> Color
+  -> Effect ReturnCode
 createFlagWithColors pos name color secondaryColor = runThisEffectFn3 "createFlag" pos name color secondaryColor
 
 findClosestByPath :: forall a. RoomPosition -> FindContext a -> Either Error (Maybe a)
@@ -90,8 +100,9 @@ findClosestByPath pos ctx = tryPure (toMaybe <$> runThisEffectFn1 "findClosestBy
 
 findClosestByPath' :: forall a. RoomPosition -> FindContext a -> ClosestPathOptions -> Either Error (Maybe a)
 findClosestByPath' pos ctx opts = tryPure (toMaybe <$> runThisEffectFn2 "findClosestByPath" pos ctx' options)
-  where ctx' = unwrapContext ctx
-        options = selectMaybes opts
+  where
+  ctx' = unwrapContext ctx
+  options = selectMaybes opts
 
 findClosestByRange :: forall a. RoomPosition -> FindContext a -> Either Error (Maybe a)
 findClosestByRange pos ctx = tryPure (toMaybe <$> runThisEffectFn1 "findClosestByRange" pos (unwrapContext ctx))
