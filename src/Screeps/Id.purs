@@ -17,9 +17,10 @@ import Data.Argonaut.Core (Json)
 import Data.Argonaut.Decode.Class (class DecodeJson, decodeJson)
 import Data.Argonaut.Encode.Class (class EncodeJson, encodeJson)
 import Data.Eq (class Eq, (==))
+import Data.Ord (class Ord)
 import Data.Function (on)
 import Data.Functor ((<$>))
-import Data.Generic.Rep (class Generic, Argument(..), Constructor(..))
+import Data.Generic.Rep (class Generic)
 import Data.Maybe (Maybe(..))
 import Data.Monoid ((<>))
 import Data.Show (class Show, show)
@@ -55,6 +56,7 @@ foreign import unsafeGetObjectById_helper :: forall a r. r -> (a -> r) -> Id a -
 
 derive instance Generic (Id a) _
 derive newtype instance eqId :: Eq (Id a)
+derive newtype instance ordId :: Ord (Id a)
 instance showId :: Show (Id a) where
   show (Id i) = "Id #" <> i
 
