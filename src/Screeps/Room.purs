@@ -138,24 +138,24 @@ createFlagWithColors room (TargetPos pos) name' color color2 =
 createFlagWithColors room (TargetObj obj) name' color color2 =
   runThisEffectFn4 "createFlag" room obj name' color color2
 
-find :: forall a. Room -> FindType a -> Array a
-find = runThisFn1 "find"
+find :: forall a. Room -> FindType a -> Effect (Array a)
+find = runThisEffectFn1 "find"
 
-find' :: forall a. Room -> FindType a -> FilterFn a -> Array a
-find' room findType filter = runThisFn2 "find" room findType { filter }
+find' :: forall a. Room -> FindType a -> FilterFn a -> Effect (Array a)
+find' room findType filter = runThisEffectFn2 "find" room findType { filter }
 
 foreign import findExitToImpl
   :: Room
   -> RoomName
   -> (ReturnCode -> Either ReturnCode (FindType RoomPosition))
   -> (FindType RoomPosition -> Either ReturnCode (FindType RoomPosition))
-  -> Either ReturnCode (FindType RoomPosition)
+  -> Effect (Either ReturnCode (FindType RoomPosition))
 
-findExitTo :: Room -> RoomName -> Either ReturnCode (FindType RoomPosition)
+findExitTo :: Room -> RoomName -> Effect (Either ReturnCode (FindType RoomPosition))
 findExitTo room otherRoomName = findExitToImpl room otherRoomName Left Right
 
-findPath :: Room -> RoomPosition -> RoomPosition -> Path
-findPath = runThisFn2 "findPath"
+findPath :: Room -> RoomPosition -> RoomPosition -> Effect Path
+findPath = runThisEffectFn2 "findPath"
 
 findPath' :: forall o. Room -> RoomPosition -> RoomPosition -> PathOptions o -> Path
 findPath' room pos1 pos2 opts = runThisFn3 "findPath" room pos1 pos2 (selectMaybes opts)
